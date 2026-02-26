@@ -105,6 +105,7 @@ label{
 }
 
 input{
+  width:100%;                 /* ✅ HIER rein */
   height:48px;
   border-radius:14px;
   border:1px solid rgba(255,255,255,.18);
@@ -134,7 +135,7 @@ input::placeholder{
 
 .grid2{
   display:grid;
-  grid-template-columns:1fr 1fr;
+  grid-template-columns: minmax(0,1fr) minmax(0,1fr);
   gap:10px;
 }
 
