@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ValoraX – Fehler</title>
+
+<style>
+:root{
+  --bg:#000;
+  --text:#fff;
+  --muted:rgba(255,255,255,.55);
+  --line:rgba(255,255,255,.18);
+  --accent:#46f39a;
+  --card:rgba(255,255,255,.04);
+}
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+}
+
+.container{
+  width:100%;
+  max-width:560px;
+  padding:32px 24px;
+  display:flex;
+  flex-direction:column;
+  min-height:100vh;
+}
+
+.brand{
+  font-weight:900;
+  font-size:16px;
+  letter-spacing:.02em;
+}
+.brand span{ color:var(--accent); }
+
+.content{
+  margin-top:100px;
+}
+
+.badge{
+  display:inline-flex;
+  padding:8px 10px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.18);
+  font-weight:900;
+  font-size:12px;
+}
+
+h1{
+  margin:18px 0 12px 0;
+  font-size:26px;
+  line-height:1.25;
+  letter-spacing:-.02em;
+}
+
+p{
+  margin:0;
+  color:var(--muted);
+  font-size:14px;
+  line-height:1.5;
+  font-weight:700;
+}
+
+.card{
+  margin-top:20px;
+  padding:14px;
+  border-radius:18px;
+  border:1px solid rgba(255,255,255,.16);
+  background:var(--card);
+}
+
+.card ul{
+  margin:0;
+  padding-left:18px;
+  font-size:13px;
+  line-height:1.6;
+  font-weight:700;
+  color:rgba(255,255,255,.6);
+}
+
+.actions{
+  margin-top:auto;
+  padding-top:24px;
+}
+
+button{
+  width:100%;
+  height:52px;
+  border-radius:16px;
+  border:1px solid rgba(255,255,255,.18);
+  background:#fff;
+  color:#000;
+  font-weight:1000;
+  font-size:14px;
+  cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+  <div class="brand">Valora<span>X</span></div>
+
+  <div class="content">
+    <div class="badge">Fehler</div>
+    <h1>Verifizierung fehlgeschlagen</h1>
+    <p>
+      Wir konnten deine Identität leider nicht bestätigen.
+      Bitte versuche es erneut.
+    </p>
+
+    <div class="card">
+      <ul>
+        <li>Gute Beleuchtung verwenden</li>
+        <li>Alle Ecken sichtbar halten</li>
+        <li>Keine Spiegelungen oder Unschärfe</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button id="retryBtn">Erneut versuchen</button>
+  </div>
+</div>
+
+<script>
+document.getElementById("retryBtn").addEventListener("click", () => {
+  window.location.href = "loading4.html"; // hier ggf. Ziel anpassen
+});
+</script>
+
+</body>
+</html>

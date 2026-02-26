@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ValoraX – Login</title>
+
+<style>
+:root{
+  --bg:#000;
+  --text:#f5f5f5;
+  --line:rgba(255,255,255,.18);
+  --btn:#2a2a2a;
+  --btnText:rgba(255,255,255,.45);
+  --accent:#46f39a;
+  --menu:#1c1c1c;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+}
+.container{
+  width:100%;
+  max-width:560px;
+  min-height:100vh;
+  padding:32px 28px;
+  display:flex;
+  flex-direction:column;
+}
+.brand{
+  font-weight:900;
+  font-size:16px;
+  letter-spacing:.02em;
+  user-select:none;
+}
+.brand span{color:var(--accent);}
+.content{margin-top:100px;}
+h1{
+  font-size:42px;
+  line-height:1.08;
+  margin:0 0 40px 0;
+  max-width:18ch;
+  letter-spacing:-.02em;
+}
+.phoneRow{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  padding-bottom:16px;
+  border-bottom:1px solid var(--line);
+}
+.flag{font-size:18px;}
+.dial{font-weight:700;min-width:44px;}
+input{
+  flex:1;
+  background:transparent;
+  border:0;
+  outline:none;
+  color:var(--text);
+  font-size:18px;
+  letter-spacing:.05em;
+}
+input::placeholder{
+  color:rgba(255,255,255,.35);
+  letter-spacing:.05em;
+}
+.actions{
+  margin-top:32px;
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  gap:14px;
+}
+.btn{
+  width:160px;
+  height:46px;
+  border-radius:12px;
+  border:0;
+  background:var(--btn);
+  color:var(--btnText);
+  font-weight:800;
+  cursor:not-allowed;
+  transition:.15s ease;
+}
+.btn.active{
+  background:#fff;
+  color:#000;
+  cursor:pointer;
+}
+.btn.secondary{
+  background:transparent;
+  border:1px solid rgba(255,255,255,.25);
+  color:#fff;
+  cursor:pointer;
+}
+.footer{
+  margin-top:auto;
+  display:flex;
+  justify-content:flex-end;
+  font-size:13px;
+}
+.langWrap{position:relative; user-select:none;}
+.langBtn{cursor:pointer;font-weight:600;}
+.dropdown{
+  position:absolute;
+  right:0;
+  bottom:28px;
+  width:240px;
+  background:var(--menu);
+  border:1px solid rgba(255,255,255,.15);
+  border-radius:16px;
+  padding:8px 0;
+  display:none;
+}
+.opt{
+  padding:10px 14px;
+  cursor:pointer;
+  display:flex;
+  justify-content:space-between;
+}
+.opt:hover{background:rgba(255,255,255,.06);}
+.opt.active{font-weight:800;}
+</style>
+</head>
+
+<body>
+<div class="container">
+  <div class="brand">Valora<span>X</span></div>
+
+  <div class="content">
+    <h1 id="title"></h1>
+
+    <div class="phoneRow">
+      <div class="flag" id="flag">🇩🇪</div>
+      <div class="dial" id="dial">+49</div>
+      <input id="phone" placeholder="123 456 78 90" inputmode="tel" autocomplete="tel">
+    </div>
+
+    <div class="fieldError" id="phoneErr" style="
+  display:none;
+  margin-top:12px;
+  font-size:13px;
+  color:rgba(255,255,255,.9);
+  font-weight:800;
+  opacity:.9;">
+</div>
+
+    <div class="actions">
+      <button class="btn" id="nextBtn" disabled></button>
+      <button class="btn secondary" id="createBtn"></button>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="langWrap">
+      <div class="langBtn" id="langBtn">
+        <span id="currentLang"></span> ▾
+      </div>
+      <div class="dropdown" id="dropdown"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const LANGS = {
+  de:{ name:"Deutsch", flag:"🇩🇪", dial:"+49",
+    loginTitle:"Welche Telefonnummer verwendest du bei ValoraX?",
+    next:"Weiter", create:"Konto eröffnen",
+    notRegistered:"Diese Nummer ist noch nicht registriert."
+  },
+  en:{ name:"English", flag:"🇬🇧", dial:"+44",
+    loginTitle:"Which phone number do you use with ValoraX?",
+    next:"Continue", create:"Open account",
+    notRegistered:"This number is not registered yet."
+  },
+  es:{ name:"Español", flag:"🇪🇸", dial:"+34",
+    loginTitle:"¿Qué número de teléfono usas en ValoraX?",
+    next:"Continuar", create:"Abrir cuenta",
+    notRegistered:"Este número aún no está registrado."
+  },
+  fr:{ name:"Français", flag:"🇫🇷", dial:"+33",
+    loginTitle:"Quel numéro de téléphone utilises-tu pour ValoraX ?",
+    next:"Continuer", create:"Ouvrir un compte",
+    notRegistered:"Ce numéro n’est pas encore enregistré."
+  },
+  it:{ name:"Italiano", flag:"🇮🇹", dial:"+39",
+    loginTitle:"Quale numero di telefono usi con ValoraX?",
+    next:"Continua", create:"Apri un conto",
+    notRegistered:"Questo numero non è ancora registrato."
+  },
+  pt:{ name:"Português", flag:"🇵🇹", dial:"+351",
+    loginTitle:"Que número de telefone usas na ValoraX?",
+    next:"Continuar", create:"Abrir conta",
+    notRegistered:"Este número ainda não está registado."
+  },
+  nl:{ name:"Nederlands", flag:"🇳🇱", dial:"+31",
+    loginTitle:"Welk telefoonnummer gebruik je bij ValoraX?",
+    next:"Doorgaan", create:"Account openen",
+    notRegistered:"Dit nummer is nog niet geregistreerd."
+  },
+  ru:{ name:"Русский", flag:"🇷🇺", dial:"+7",
+    loginTitle:"Какой номер телефона вы используете в ValoraX?",
+    next:"Продолжить", create:"Открыть счёт",
+    notRegistered:"Этот номер ещё не зарегистрирован."
+  },
+  zhCN:{ name:"简体中文", flag:"🇨🇳", dial:"+86",
+    loginTitle:"你在 ValoraX 使用的手机号码是什么？",
+    next:"继续", create:"开设账户",
+    notRegistered:"该号码尚未注册。"
+  }
+};
+
+const STORAGE_KEY = "valorax_lang";
+let current = localStorage.getItem(STORAGE_KEY) || "de";
+if(!LANGS[current]) current = "de";
+
+const title = document.getElementById("title");
+const nextBtn = document.getElementById("nextBtn");
+const createBtn = document.getElementById("createBtn");
+const currentLang = document.getElementById("currentLang");
+const dropdown = document.getElementById("dropdown");
+const flag = document.getElementById("flag");
+const dial = document.getElementById("dial");
+const phone = document.getElementById("phone");
+const langBtn = document.getElementById("langBtn");
+const phoneErr = document.getElementById("phoneErr");
+
+let triedSubmit = false;
+
+function setError(show, msg){
+  phoneErr.textContent = show ? (msg || "") : "";
+  phoneErr.style.display = show ? "block" : "none";
+}
+
+function setNextEnabled(enabled){
+  nextBtn.disabled = !enabled;
+  nextBtn.classList.toggle("active", !!enabled);
+}
+
+function render(){
+  const L = LANGS[current];
+  document.documentElement.lang = current;
+
+  title.textContent = L.loginTitle;
+  nextBtn.textContent = L.next;
+  createBtn.textContent = L.create;
+  currentLang.textContent = L.name;
+
+  flag.textContent = L.flag;
+  dial.textContent = L.dial;
+
+  dropdown.innerHTML = "";
+  Object.keys(LANGS).forEach(code=>{
+    const div = document.createElement("div");
+    div.className = "opt" + (code === current ? " active" : "");
+    div.innerHTML = `<span>${LANGS[code].name}</span><span>${code===current?"✓":""}</span>`;
+    div.onclick = () => {
+      current = code;
+      localStorage.setItem(STORAGE_KEY, current);
+      render();
+      dropdown.style.display = "none";
+
+      // Fehlermeldung falls schon geklickt wurde, in neuer Sprache anzeigen
+      if(triedSubmit){
+        setError(true, LANGS[current].notRegistered);
+      }
+    };
+    dropdown.appendChild(div);
+  });
+
+  document.title = `ValoraX – ${L.name}`;
+}
+
+langBtn.onclick = (e) => {
+  e.stopPropagation();
+  dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+};
+document.addEventListener("click", (e) => {
+  if(!document.querySelector(".langWrap").contains(e.target)){
+    dropdown.style.display = "none";
+  }
+});
+
+// ✅ Button wird klickbar sobald Nummer lang genug ist (Fehler noch nicht zeigen!)
+phone.addEventListener("input", ()=>{
+  const digits = (phone.value || "").replace(/\D/g,"");
+  const ok = digits.length >= 7;
+  setNextEnabled(ok);
+
+  // Wenn man nach einem Fehler weiter tippt, Fehler wieder ausblenden
+  if(!triedSubmit){
+    setError(false);
+  }
+});
+
+nextBtn.addEventListener("click", () => {
+  const L = LANGS[current];
+  const digits = (phone.value || "").replace(/\D/g,"");
+
+  if(digits.length < 7) return;
+
+  triedSubmit = true;
+
+  // ✅ Immer Fehlermeldung anzeigen (egal welche Nummer)
+  setError(true, L.notRegistered);
+});
+
+createBtn.addEventListener("click", () => {
+  window.location.href = "register.html";
+});
+
+render();
+setNextEnabled(false);
+setError(false);
+</script>
+</body>
+</html>

@@ -1,0 +1,442 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ValoraX – PIN bestätigen</title>
+
+<style>
+:root{
+  --bg:#000;
+  --text:#f5f5f5;
+  --muted:rgba(255,255,255,.55);
+  --accent:#46f39a;
+
+  --dotIdle: rgba(255,255,255,.16);
+  --dotOn: #fff;
+
+  --keyBg: rgba(255,255,255,.06);
+  --keyBgHover: rgba(255,255,255,.10);
+  --keyText: rgba(255,255,255,.92);
+
+  --menu:#1c1c1c;
+  --menuLine: rgba(255,255,255,.15);
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "PingFang SC",
+    "Microsoft YaHei",
+    "Noto Sans SC",
+    ui-sans-serif,
+    system-ui,
+    Segoe UI,
+    Roboto,
+    Arial,
+    sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+}
+
+.container{
+  width:100%;
+  max-width:560px;
+  min-height:100vh;
+  padding:32px 28px;
+  display:flex;
+  flex-direction:column;
+  position:relative;
+}
+
+.brand{
+  font-weight:900;
+  font-size:16px;
+  letter-spacing:.02em;
+  user-select:none;
+}
+.brand span{color:var(--accent);}
+
+.content{ margin-top:110px; }
+
+h1{
+  font-size:42px;
+  line-height:1.08;
+  margin:0 0 18px 0;
+  max-width:18ch;
+  letter-spacing:-.02em;
+}
+
+.sub{
+  margin:0 0 44px 0;
+  color:var(--muted);
+  font-size:14px;
+  line-height:1.5;
+  max-width:44ch;
+}
+
+.pin{
+  display:flex;
+  gap:26px;
+  align-items:center;
+  margin-bottom: 42px;
+}
+.dot{
+  width:22px;
+  height:22px;
+  border-radius:50%;
+  background:var(--dotIdle);
+  transition: .12s ease;
+}
+.dot.on{ background: var(--dotOn); }
+
+.pin.shake{ animation: shake .30s ease; }
+@keyframes shake{
+  0%{transform:translateX(0)}
+  25%{transform:translateX(-8px)}
+  50%{transform:translateX(8px)}
+  75%{transform:translateX(-6px)}
+  100%{transform:translateX(0)}
+}
+
+/* Keypad */
+.keypad{
+  width:100%;
+  max-width: 360px;
+  display:grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.key{
+  height:56px;
+  border-radius:14px;
+  border:0;
+  background: var(--keyBg);
+  color: var(--keyText);
+  font-weight:900;
+  font-size:18px;
+  cursor:pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.key:active{ background: var(--keyBgHover); transform: translateY(1px); }
+
+.key.empty{
+  background: transparent;
+  cursor: default;
+}
+.key.empty:active{ transform:none; }
+
+.key.del{
+  font-weight:800;
+  font-size:14px;
+  letter-spacing:.02em;
+}
+
+.key.continue{
+  font-weight:900;
+  font-size:14px;
+  letter-spacing:.02em;
+  background: rgba(255,255,255,.08);
+  color: rgba(255,255,255,.55);
+  cursor:not-allowed;
+}
+.key.continue.active{
+  background:#fff;
+  color:#000;
+  cursor:pointer;
+}
+
+/* Footer language selector */
+.footer{
+  margin-top:auto;
+  display:flex;
+  justify-content:flex-end;
+  font-size:13px;
+}
+
+.langWrap{position:relative; user-select:none;}
+.langBtn{cursor:pointer; font-weight:600;}
+
+.dropdown{
+  position:absolute;
+  right:0;
+  bottom:28px;
+  width:240px;
+  background:var(--menu);
+  border:1px solid var(--menuLine);
+  border-radius:16px;
+  padding:8px 0;
+  display:none;
+  box-shadow:0 12px 34px rgba(0,0,0,.65);
+}
+
+.opt{
+  padding:10px 14px;
+  cursor:pointer;
+  display:flex;
+  justify-content:space-between;
+}
+.opt:hover{background:rgba(255,255,255,.06);}
+.opt.active{font-weight:800;}
+
+/* Mobile spacing */
+@media (max-width:520px){
+  .container{ padding:22px 18px; }
+  .content{ margin-top:82px; }
+  h1{ font-size:34px; }
+  .pin{ margin-bottom: 34px; }
+  .keypad{ max-width: 100%; }
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+  <div class="brand">Valora<span>X</span></div>
+
+  <div class="content">
+    <h1 id="title"></h1>
+    <p class="sub" id="sub"></p>
+
+    <div class="pin" id="pinRow" aria-label="PIN bestätigen">
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
+
+    <div class="keypad" id="keypad" aria-label="Zifferntastatur">
+      <button class="key" data-digit="1" type="button">1</button>
+      <button class="key" data-digit="2" type="button">2</button>
+      <button class="key" data-digit="3" type="button">3</button>
+
+      <button class="key" data-digit="4" type="button">4</button>
+      <button class="key" data-digit="5" type="button">5</button>
+      <button class="key" data-digit="6" type="button">6</button>
+
+      <button class="key" data-digit="7" type="button">7</button>
+      <button class="key" data-digit="8" type="button">8</button>
+      <button class="key" data-digit="9" type="button">9</button>
+
+      <!-- unten links: Weiter -->
+      <button class="key continue" id="continueBtn" type="button" disabled>Weiter</button>
+      <button class="key" data-digit="0" type="button">0</button>
+      <button class="key del" data-action="del" type="button" id="delBtn">Löschen</button>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="langWrap">
+      <div class="langBtn" id="langBtn">
+        <span id="currentLang"></span> ▾
+      </div>
+      <div class="dropdown" id="dropdown"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const STORAGE_KEY_LANG = "valorax_lang";
+const STORAGE_KEY_PIN  = "valorax_temp_pin";
+
+const LANGS = {
+  de:{ name:"Deutsch",
+    title:"Bestätige deine PIN",
+    sub:"Gib dieselbe 4-stellige PIN noch einmal ein.",
+    del:"Löschen",
+    cont:"Weiter",
+    wrong:"PIN stimmt nicht überein."
+  },
+  en:{ name:"English",
+    title:"Confirm your PIN",
+    sub:"Enter the same 4-digit PIN again.",
+    del:"Delete",
+    cont:"Continue",
+    wrong:"PINs do not match."
+  },
+  es:{ name:"Español",
+    title:"Confirma tu PIN",
+    sub:"Introduce el mismo PIN de 4 dígitos otra vez.",
+    del:"Borrar",
+    cont:"Continuar",
+    wrong:"Los PIN no coinciden."
+  },
+  fr:{ name:"Français",
+    title:"Confirme ton code PIN",
+    sub:"Saisis à nouveau le même PIN à 4 chiffres.",
+    del:"Suppr.",
+    cont:"Continuer",
+    wrong:"Les codes PIN ne correspondent pas."
+  },
+  it:{ name:"Italiano",
+    title:"Conferma il PIN",
+    sub:"Inserisci di nuovo lo stesso PIN a 4 cifre.",
+    del:"Cancella",
+    cont:"Continua",
+    wrong:"I PIN non corrispondono."
+  },
+  pt:{ name:"Português",
+    title:"Confirma o teu PIN",
+    sub:"Introduz novamente o mesmo PIN de 4 dígitos.",
+    del:"Apagar",
+    cont:"Continuar",
+    wrong:"Os PIN não coincidem."
+  },
+  nl:{ name:"Nederlands",
+    title:"Bevestig je pincode",
+    sub:"Voer dezelfde 4-cijferige pincode nogmaals in.",
+    del:"Wissen",
+    cont:"Doorgaan",
+    wrong:"Pincodes komen niet overeen."
+  },
+  ru:{ name:"Русский",
+    title:"Подтвердите PIN-код",
+    sub:"Введите тот же 4-значный PIN-код ещё раз.",
+    del:"Удалить",
+    cont:"Продолжить",
+    wrong:"PIN-коды не совпадают."
+  },
+  zhCN:{ name:"简体中文",
+    title:"确认 PIN 码",
+    sub:"请再次输入相同的 4 位 PIN 码。",
+    del:"删除",
+    cont:"继续",
+    wrong:"PIN 码不一致。"
+  }
+};
+
+let current = localStorage.getItem(STORAGE_KEY_LANG) || "de";
+if(!LANGS[current]) current = "de";
+
+const savedPin = localStorage.getItem(STORAGE_KEY_PIN) || "";
+
+const titleEl = document.getElementById("title");
+const subEl = document.getElementById("sub");
+const currentLangEl = document.getElementById("currentLang");
+const dropdown = document.getElementById("dropdown");
+const langBtn = document.getElementById("langBtn");
+
+const delBtn = document.getElementById("delBtn");
+const continueBtn = document.getElementById("continueBtn");
+
+const pinRow = document.getElementById("pinRow");
+const dots = Array.from(pinRow.querySelectorAll(".dot"));
+const keypad = document.getElementById("keypad");
+
+let pin = "";
+
+function render(){
+  const L = LANGS[current];
+  document.documentElement.lang = (current === "zhCN") ? "zh-CN" : current;
+
+  titleEl.textContent = L.title;
+  subEl.textContent = L.sub;
+  currentLangEl.textContent = L.name;
+
+  delBtn.textContent = L.del;
+  continueBtn.textContent = L.cont;
+
+  dropdown.innerHTML = "";
+  Object.keys(LANGS).forEach(code => {
+    const div = document.createElement("div");
+    div.className = "opt" + (code === current ? " active" : "");
+    div.innerHTML = `<span>${LANGS[code].name}</span><span>${code===current?"✓":""}</span>`;
+    div.onclick = () => {
+      current = code;
+      localStorage.setItem(STORAGE_KEY_LANG, current);
+      render();
+      dropdown.style.display = "none";
+    };
+    dropdown.appendChild(div);
+  });
+
+  document.title = `ValoraX – ${L.name}`;
+  updateUI();
+}
+
+function updateDots(){
+  dots.forEach((d,i)=> d.classList.toggle("on", i < pin.length));
+}
+
+function updateContinue(){
+  const ok = pin.length === 4;
+  continueBtn.disabled = !ok;
+  continueBtn.classList.toggle("active", ok);
+}
+
+function updateUI(){
+  updateDots();
+  updateContinue();
+}
+
+function addDigit(d){
+  if(pin.length >= 4) return;
+  pin += d;
+  updateUI();
+  if (navigator.vibrate) navigator.vibrate(10);
+}
+
+function delDigit(){
+  if(pin.length === 0) return;
+  pin = pin.slice(0, -1);
+  updateUI();
+  if (navigator.vibrate) navigator.vibrate(6);
+}
+
+keypad.addEventListener("click", (e) => {
+  const btn = e.target.closest("button");
+  if(!btn) return;
+
+  const digit = btn.getAttribute("data-digit");
+  const action = btn.getAttribute("data-action");
+
+  if(digit !== null) addDigit(digit);
+  if(action === "del") delDigit();
+});
+
+// optional desktop keyboard for testing
+document.addEventListener("keydown", (e) => {
+  if(e.key >= "0" && e.key <= "9") addDigit(e.key);
+  if(e.key === "Backspace") delDigit();
+});
+
+langBtn.addEventListener("click", (e)=>{
+  e.stopPropagation();
+  dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+});
+document.addEventListener("click", (e)=>{
+  if(!document.querySelector(".langWrap").contains(e.target)){
+    dropdown.style.display = "none";
+  }
+});
+
+continueBtn.addEventListener("click", ()=>{
+  if(pin.length !== 4) return;
+
+  if(pin === savedPin && savedPin.length === 4){
+    localStorage.removeItem(STORAGE_KEY_PIN);
+    window.location.href = "loading.html" + window.location.search;
+  } else {
+    // reset + shake
+    pin = "";
+    updateUI();
+    pinRow.classList.remove("shake");
+    void pinRow.offsetWidth; // reflow to restart animation
+    pinRow.classList.add("shake");
+    if (navigator.vibrate) navigator.vibrate([30, 30, 30]);
+    // optional: subline text could be set to LANGS[current].wrong
+  }
+});
+
+render();
+</script>
+</body>
+</html>

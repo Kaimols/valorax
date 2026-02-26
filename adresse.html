@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ValoraX – Adresse</title>
+
+<style>
+:root{
+  --bg:#000;
+  --text:#fff;
+  --muted:rgba(255,255,255,.6);
+  --line:rgba(255,255,255,.15);
+  --accent:#46f39a;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+}
+.container{
+  width:100%;
+  max-width:560px;
+  padding:32px 24px;
+  display:flex;
+  flex-direction:column;
+  min-height:100vh;
+}
+.brand{
+  font-weight:900;
+  font-size:16px;
+  margin-bottom:50px;
+}
+.brand span{ color:var(--accent); }
+h1{
+  font-size:26px;
+  margin:0 0 22px 0;
+  line-height:1.3;
+}
+.field{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  margin-bottom:16px;
+}
+label{
+  font-size:12px;
+  letter-spacing:.08em;
+  font-weight:900;
+  color:var(--muted);
+}
+input{
+  height:48px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.18);
+  background:transparent;
+  color:#fff;
+  padding:0 14px;
+  font-size:14px;
+  outline:none;
+}
+input.invalid{ border-color:rgba(255,255,255,.5); }
+input::placeholder{ color:rgba(255,255,255,.35); }
+.fieldError{
+  display:none;
+  font-size:12px;
+  color:#fff;
+  opacity:.85;
+  font-weight:800;
+}
+.fieldError.show{ display:block; }
+.grid2{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+}
+.notice{
+  margin:6px 0 0 0;
+  color:rgba(255,255,255,.45);
+  font-size:12px;
+  line-height:1.4;
+  font-weight:700;
+}
+.actions{
+  margin-top:auto;
+  padding-top:20px;
+}
+button{
+  width:100%;
+  height:52px;
+  border-radius:16px;
+  border:1px solid rgba(255,255,255,.18);
+  background:#fff;
+  color:#000;
+  font-weight:1000;
+  font-size:14px;
+  cursor:pointer;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="brand">Valora<span>X</span></div>
+
+  <h1>Bitte gib deine Adresse an</h1>
+
+  <div class="grid2">
+    <div class="field">
+      <label>VORNAME</label>
+      <input id="first" placeholder="Max" autocomplete="given-name">
+      <div class="fieldError" id="firstErr"></div>
+    </div>
+    <div class="field">
+      <label>NACHNAME</label>
+      <input id="last" placeholder="Mustermann" autocomplete="family-name">
+      <div class="fieldError" id="lastErr"></div>
+    </div>
+  </div>
+
+  <div class="field">
+    <label>ADRESSE</label>
+    <input id="addr" placeholder="Musterstraße 12" autocomplete="street-address">
+    <div class="fieldError" id="addrErr"></div>
+  </div>
+
+  <div class="grid2">
+    <div class="field">
+      <label>PLZ</label>
+      <input id="zip" placeholder="10115" autocomplete="postal-code" inputmode="numeric">
+      <div class="fieldError" id="zipErr"></div>
+    </div>
+    <div class="field">
+      <label>STADT</label>
+      <input id="city" placeholder="Berlin" autocomplete="address-level2">
+      <div class="fieldError" id="cityErr"></div>
+    </div>
+  </div>
+
+  <div class="field">
+    <label>LAND</label>
+    <input id="country" placeholder="Deutschland" autocomplete="country-name">
+    <div class="fieldError" id="countryErr"></div>
+  </div>
+
+  <p class="notice">
+    Sicherheitshinweis: Deine Angaben werden nur zur Bearbeitung verarbeitet.
+  </p>
+
+  <div class="actions">
+    <button id="continueBtn">Weiter</button>
+  </div>
+</div>
+
+<script>
+const firstEl = document.getElementById("first");
+const lastEl = document.getElementById("last");
+const addrEl = document.getElementById("addr");
+const zipEl = document.getElementById("zip");
+const cityEl = document.getElementById("city");
+const countryEl = document.getElementById("country");
+const btn = document.getElementById("continueBtn");
+
+const firstErr = document.getElementById("firstErr");
+const lastErr = document.getElementById("lastErr");
+const addrErr = document.getElementById("addrErr");
+const zipErr = document.getElementById("zipErr");
+const cityErr = document.getElementById("cityErr");
+const countryErr = document.getElementById("countryErr");
+
+let showErrors = false;
+
+function onlyDigits(v){ return (v||"").replace(/\D/g,""); }
+function sanitizeName(v){
+  // nur Buchstaben (inkl. Umlaute), Leerzeichen, Apostroph, Bindestrich
+  return (v||"").replace(/[^A-Za-zÀ-ÿÄÖÜäöüß' -]/g,"").replace(/\s+/g," ").trimStart();
+}
+function sanitizeCityCountry(v){
+  // ähnlich, aber erlaubt auch Punkte (z.B. St.) und Bindestriche
+  return (v||"").replace(/[^A-Za-zÀ-ÿÄÖÜäöüß' .-]/g,"").replace(/\s+/g," ").trimStart();
+}
+
+function setFieldState(input, err, ok, msg){
+  if(!showErrors){
+    input.classList.remove("invalid");
+    err.classList.remove("show");
+    err.textContent="";
+    return;
+  }
+  input.classList.toggle("invalid", !ok);
+  if(ok){
+    err.classList.remove("show");
+    err.textContent="";
+  }else{
+    err.textContent = msg || "Ungültiger Wert.";
+    err.classList.add("show");
+  }
+}
+
+function validateFirst(){
+  const v = firstEl.value.trim();
+  if(!v) return {ok:false,msg:"Vorname erforderlich."};
+  if(v.length < 2) return {ok:false,msg:"Vorname zu kurz."};
+  return {ok:true};
+}
+function validateLast(){
+  const v = lastEl.value.trim();
+  if(!v) return {ok:false,msg:"Nachname erforderlich."};
+  if(v.length < 2) return {ok:false,msg:"Nachname zu kurz."};
+  return {ok:true};
+}
+function validateAddr(){
+  const v = addrEl.value.trim();
+  if(!v) return {ok:false,msg:"Adresse erforderlich."};
+  if(v.length < 5) return {ok:false,msg:"Adresse zu kurz."};
+  return {ok:true};
+}
+function validateZip(){
+  // hier: DE-PLZ (5 Ziffern). Wenn international: lockern.
+  const v = onlyDigits(zipEl.value);
+  if(!v) return {ok:false,msg:"PLZ erforderlich."};
+  if(v.length !== 5) return {ok:false,msg:"PLZ muss 5 Ziffern haben."};
+  return {ok:true};
+}
+function validateCity(){
+  const v = cityEl.value.trim();
+  if(!v) return {ok:false,msg:"Stadt erforderlich."};
+  if(v.length < 2) return {ok:false,msg:"Stadt zu kurz."};
+  return {ok:true};
+}
+function validateCountry(){
+  const v = countryEl.value.trim();
+  if(!v) return {ok:false,msg:"Land erforderlich."};
+  if(v.length < 2) return {ok:false,msg:"Land zu kurz."};
+  return {ok:true};
+}
+
+function validateAll(){
+  const r1 = validateFirst();
+  const r2 = validateLast();
+  const r3 = validateAddr();
+  const r4 = validateZip();
+  const r5 = validateCity();
+  const r6 = validateCountry();
+
+  setFieldState(firstEl, firstErr, r1.ok, r1.msg);
+  setFieldState(lastEl,  lastErr,  r2.ok, r2.msg);
+  setFieldState(addrEl,  addrErr,  r3.ok, r3.msg);
+  setFieldState(zipEl,   zipErr,   r4.ok, r4.msg);
+  setFieldState(cityEl,  cityErr,  r5.ok, r5.msg);
+  setFieldState(countryEl, countryErr, r6.ok, r6.msg);
+
+  return r1.ok && r2.ok && r3.ok && r4.ok && r5.ok && r6.ok;
+}
+
+/* Input restrictions */
+firstEl.addEventListener("input", ()=>{
+  const before = firstEl.value;
+  const after = sanitizeName(before);
+  if(before !== after) firstEl.value = after;
+  validateAll();
+});
+lastEl.addEventListener("input", ()=>{
+  const before = lastEl.value;
+  const after = sanitizeName(before);
+  if(before !== after) lastEl.value = after;
+  validateAll();
+});
+zipEl.addEventListener("input", ()=>{
+  zipEl.value = onlyDigits(zipEl.value).slice(0,5);
+  validateAll();
+});
+cityEl.addEventListener("input", ()=>{
+  const before = cityEl.value;
+  const after = sanitizeCityCountry(before);
+  if(before !== after) cityEl.value = after;
+  validateAll();
+});
+countryEl.addEventListener("input", ()=>{
+  const before = countryEl.value;
+  const after = sanitizeCityCountry(before);
+  if(before !== after) countryEl.value = after;
+  validateAll();
+});
+addrEl.addEventListener("input", validateAll);
+
+/* No errors initially */
+validateAll();
+
+btn.addEventListener("click", ()=>{
+  showErrors = true;
+  const ok = validateAll();
+  if(!ok){
+    const firstInvalid = document.querySelector("input.invalid");
+    if(firstInvalid) firstInvalid.focus();
+    return;
+  }
+
+  // ✅ weiter, wenn alles gültig
+  // window.location.href = "fertig.html";
+ window.location.href = "id.html";
+});
+</script>
+
+</body>
+</html>

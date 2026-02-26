@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ValoraX – Identitätsprüfung</title>
+
+<style>
+:root{
+  --bg:#000;
+  --text:#fff;
+  --muted:rgba(255,255,255,.55);
+  --line:rgba(255,255,255,.18);
+  --accent:#46f39a;
+}
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+}
+
+.container{
+  width:100%;
+  max-width:560px;
+  padding:32px 24px;
+  display:flex;
+  flex-direction:column;
+  min-height:100vh;
+}
+
+.brand{ font-weight:900; font-size:16px; }
+.brand span{ color:var(--accent); }
+
+h1{
+  margin:60px 0 14px 0;
+  font-size:24px;
+  line-height:1.3;
+}
+
+.sub{
+  font-size:14px;
+  color:var(--muted);
+  font-weight:700;
+  margin-bottom:28px;
+}
+
+.uploadBox{
+  border:1px dashed var(--line);
+  border-radius:18px;
+  height:220px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:20px;
+  cursor:pointer;
+  overflow:hidden;
+  position:relative;
+}
+
+.uploadBox img,
+.uploadBox video{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+
+.uploadText{
+  font-size:14px;
+  font-weight:800;
+  color:var(--muted);
+}
+
+.actions{
+  margin-top:auto;
+  padding-top:28px;
+}
+
+button{
+  width:100%;
+  height:52px;
+  border-radius:16px;
+  border:1px solid rgba(255,255,255,.18);
+  background:#fff;
+  color:#000;
+  font-weight:1000;
+  font-size:14px;
+  cursor:pointer;
+}
+
+button:disabled{
+  opacity:.4;
+  cursor:not-allowed;
+}
+
+.cameraOverlay{
+  position:absolute;
+  width:82%;
+  height:60%;
+  border:2px solid var(--accent);
+  border-radius:18px;
+  pointer-events:none;
+  box-shadow:
+    0 0 12px var(--accent),
+    0 0 0 9999px rgba(0,0,0,.35);
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="brand">Valora<span>X</span></div>
+
+  <h1>Bestätige deine Identität</h1>
+  <div class="sub">
+    Bitte fotografiere die Vorderseite deines Ausweises.
+    Achte darauf, dass alle Daten gut lesbar sind.
+  </div>
+
+  <div class="uploadBox" id="uploadBox">
+    <div class="uploadText" id="uploadText">Tippe zum Fotografieren</div>
+  </div>
+
+  <div class="actions">
+    <button id="continueBtn" disabled>Weiter</button>
+  </div>
+</div>
+
+<script>
+const btn = document.getElementById("continueBtn");
+const uploadBox = document.getElementById("uploadBox");
+
+let stream = null;
+let videoEl = null;
+let photoDataUrl = null;
+let cameraReady = false;
+
+function setMessage(html){
+  uploadBox.innerHTML = `<div class="uploadText">${html}</div>`;
+}
+
+async function startCamera(){
+  cameraReady = false;
+  photoDataUrl = null;
+  btn.disabled = true;
+
+  try{
+    stream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: { ideal: "environment" } },
+      audio: false
+    });
+
+    videoEl = document.createElement("video");
+    videoEl.autoplay = true;
+    videoEl.playsInline = true;
+    videoEl.srcObject = stream;
+
+    uploadBox.innerHTML = "";
+    uploadBox.appendChild(videoEl);
+
+    const overlay = document.createElement("div");
+    overlay.className = "cameraOverlay";
+    uploadBox.appendChild(overlay);
+
+    const hint = document.createElement("div");
+    hint.className = "uploadText";
+    hint.style.position = "absolute";
+    hint.style.bottom = "14px";
+    hint.style.left = "0";
+    hint.style.right = "0";
+    hint.style.textAlign = "center";
+    hint.textContent = "Tippe zum Auslösen";
+    uploadBox.appendChild(hint);
+
+    videoEl.addEventListener("loadedmetadata", () => {
+      cameraReady = true;
+    }, { once:true });
+
+  }catch(err){
+    stopCamera();
+    setMessage("Kamera konnte nicht geöffnet werden.<br>Bitte erlaube Kamera-Zugriff.");
+  }
+}
+
+function stopCamera(){
+  if(stream){
+    stream.getTracks().forEach(t => t.stop());
+  }
+  stream = null;
+  videoEl = null;
+  cameraReady = false;
+}
+
+function capturePhoto(){
+  if(!videoEl || !cameraReady || !videoEl.videoWidth) return;
+
+  const canvas = document.createElement("canvas");
+  canvas.width = videoEl.videoWidth;
+  canvas.height = videoEl.videoHeight;
+
+  const ctx = canvas.getContext("2d");
+  ctx.drawImage(videoEl, 0, 0);
+
+  photoDataUrl = canvas.toDataURL("image/jpeg", 0.92);
+
+  stopCamera();
+
+  const img = document.createElement("img");
+  img.src = photoDataUrl;
+
+  uploadBox.innerHTML = "";
+  uploadBox.appendChild(img);
+
+  btn.disabled = false;
+}
+
+// Ein einziger Click-Handler (State Machine)
+uploadBox.addEventListener("click", () => {
+  if(!stream){
+    // noch keine Kamera: starten
+    startCamera();
+    return;
+  }
+  // Kamera läuft: Foto machen
+  capturePhoto();
+});
+
+btn.addEventListener("click", () => {
+  if(btn.disabled) return;
+
+  // Option A: Foto in sessionStorage für die nächste Seite
+  // sessionStorage.setItem("id_front_photo", photoDataUrl);
+
+  // Option B: Upload hier starten (fetch) und dann weiterleiten
+
+  window.location.href = "loading1.html";
+});
+
+// Initialer Zustand
+setMessage("Tippe zum Fotografieren");
+</script>
+
+</body>
+</html>
