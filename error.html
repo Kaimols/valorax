@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
 <title>ValoraX – Fehler</title>
 
 <style>
@@ -16,23 +16,43 @@
 }
 *{box-sizing:border-box}
 
-body{
+/* Kein Scroll + Mobile Bounce aus */
+html, body{
+  height:100%;
   margin:0;
+  overflow:hidden;
+  overscroll-behavior:none;
+  touch-action:manipulation;
+}
+
+body{
+  height:100dvh;
   background:var(--bg);
   color:var(--text);
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
-  min-height:100vh;
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "PingFang SC",
+    "Microsoft YaHei",
+    "Noto Sans SC",
+    ui-sans-serif,
+    system-ui,
+    Segoe UI,
+    Roboto,
+    Arial,
+    sans-serif;
   display:flex;
   justify-content:center;
 }
 
+/* Container wie andere Seiten */
 .container{
   width:100%;
   max-width:560px;
-  padding:32px 24px;
+  height:100dvh;
+  padding:26px 18px calc(18px + env(safe-area-inset-bottom) + 40px);
   display:flex;
   flex-direction:column;
-  min-height:100vh;
 }
 
 .brand{
@@ -43,14 +63,14 @@ body{
 .brand span{ color:var(--accent); }
 
 .content{
-  margin-top:100px;
+  margin-top:90px;
 }
 
 .badge{
   display:inline-flex;
-  padding:8px 10px;
+  padding:8px 12px;
   border-radius:999px;
-  border:1px solid rgba(255,255,255,.18);
+  border:1px solid var(--line);
   font-weight:900;
   font-size:12px;
 }
@@ -72,9 +92,9 @@ p{
 
 .card{
   margin-top:20px;
-  padding:14px;
+  padding:16px;
   border-radius:18px;
-  border:1px solid rgba(255,255,255,.16);
+  border:1px solid var(--line);
   background:var(--card);
 }
 
@@ -89,19 +109,27 @@ p{
 
 .actions{
   margin-top:auto;
-  padding-top:24px;
+  padding-top:20px;
 }
 
 button{
   width:100%;
-  height:52px;
+  height:56px;
   border-radius:16px;
-  border:1px solid rgba(255,255,255,.18);
+  border:1px solid var(--line);
   background:#fff;
   color:#000;
   font-weight:1000;
   font-size:14px;
   cursor:pointer;
+}
+
+/* Mobile Anpassung */
+@media (max-width:420px){
+  .content{ margin-top:70px; }
+}
+@media (max-width:360px){
+  .content{ margin-top:60px; }
 }
 </style>
 </head>
@@ -111,30 +139,158 @@ button{
   <div class="brand">Valora<span>X</span></div>
 
   <div class="content">
-    <div class="badge">Fehler</div>
-    <h1>Verifizierung fehlgeschlagen</h1>
-    <p>
-      Wir konnten deine Identität leider nicht bestätigen.
-      Bitte versuche es erneut.
-    </p>
+    <div class="badge" id="badge"></div>
+    <h1 id="title"></h1>
+    <p id="desc"></p>
 
     <div class="card">
-      <ul>
-        <li>Gute Beleuchtung verwenden</li>
-        <li>Alle Ecken sichtbar halten</li>
-        <li>Keine Spiegelungen oder Unschärfe</li>
-      </ul>
+      <ul id="tips"></ul>
     </div>
   </div>
 
   <div class="actions">
-    <button id="retryBtn">Erneut versuchen</button>
+    <button id="retryBtn"></button>
   </div>
 </div>
 
 <script>
+const STORAGE_KEY_LANG = "valorax_lang";
+
+const LANGS = {
+  de: {
+    badge: "Fehler",
+    title: "Verifizierung fehlgeschlagen",
+    desc: "Wir konnten deine Identität leider nicht bestätigen. Bitte versuche es erneut.",
+    tips: [
+      "Gute Beleuchtung verwenden",
+      "Alle Ecken sichtbar halten",
+      "Keine Spiegelungen oder Unschärfe"
+    ],
+    retry: "Erneut versuchen"
+  },
+
+  en: {
+    badge: "Error",
+    title: "Verification failed",
+    desc: "We were unable to verify your identity. Please try again.",
+    tips: [
+      "Use good lighting",
+      "Keep all corners visible",
+      "Avoid reflections or blur"
+    ],
+    retry: "Try again"
+  },
+
+  es: {
+    badge: "Error",
+    title: "Verificación fallida",
+    desc: "No pudimos verificar tu identidad. Por favor, inténtalo de nuevo.",
+    tips: [
+      "Usa buena iluminación",
+      "Mantén todas las esquinas visibles",
+      "Evita reflejos o desenfoque"
+    ],
+    retry: "Intentar de nuevo"
+  },
+
+  fr: {
+    badge: "Erreur",
+    title: "Vérification échouée",
+    desc: "Nous n’avons pas pu vérifier votre identité. Veuillez réessayer.",
+    tips: [
+      "Utilisez un bon éclairage",
+      "Gardez tous les coins visibles",
+      "Évitez les reflets ou le flou"
+    ],
+    retry: "Réessayer"
+  },
+
+  it: {
+    badge: "Errore",
+    title: "Verifica non riuscita",
+    desc: "Non siamo riusciti a verificare la tua identità. Riprova.",
+    tips: [
+      "Usa una buona illuminazione",
+      "Mantieni visibili tutti gli angoli",
+      "Evita riflessi o sfocature"
+    ],
+    retry: "Riprova"
+  },
+
+  pt: {
+    badge: "Erro",
+    title: "Verificação falhou",
+    desc: "Não foi possível verificar a tua identidade. Tenta novamente.",
+    tips: [
+      "Usa boa iluminação",
+      "Mantém todos os cantos visíveis",
+      "Evita reflexos ou desfocagem"
+    ],
+    retry: "Tentar novamente"
+  },
+
+  nl: {
+    badge: "Fout",
+    title: "Verificatie mislukt",
+    desc: "We konden je identiteit niet verifiëren. Probeer het opnieuw.",
+    tips: [
+      "Gebruik goede verlichting",
+      "Houd alle hoeken zichtbaar",
+      "Vermijd reflecties of onscherpte"
+    ],
+    retry: "Opnieuw proberen"
+  },
+
+  ru: {
+    badge: "Ошибка",
+    title: "Проверка не удалась",
+    desc: "Не удалось подтвердить вашу личность. Пожалуйста, попробуйте снова.",
+    tips: [
+      "Используйте хорошее освещение",
+      "Держите все углы видимыми",
+      "Избегайте бликов и размытости"
+    ],
+    retry: "Попробовать снова"
+  },
+
+  zhCN: {
+    badge: "错误",
+    title: "验证失败",
+    desc: "我们无法验证您的身份。请重试。",
+    tips: [
+      "使用良好的照明",
+      "保持所有角落可见",
+      "避免反光或模糊"
+    ],
+    retry: "重试"
+  }
+};
+
+let current = localStorage.getItem(STORAGE_KEY_LANG) || "de";
+if(!LANGS[current]) current = "de";
+
+function render(){
+  const L = LANGS[current];
+  document.documentElement.lang = current === "zhCN" ? "zh-CN" : current;
+
+  document.getElementById("badge").textContent = L.badge;
+  document.getElementById("title").textContent = L.title;
+  document.getElementById("desc").textContent = L.desc;
+  document.getElementById("retryBtn").textContent = L.retry;
+
+  const tipsEl = document.getElementById("tips");
+  tipsEl.innerHTML = "";
+  L.tips.forEach(t=>{
+    const li = document.createElement("li");
+    li.textContent = t;
+    tipsEl.appendChild(li);
+  });
+}
+
+render();
+
 document.getElementById("retryBtn").addEventListener("click", () => {
-  window.location.href = "loading4.html"; // hier ggf. Ziel anpassen
+  window.location.href = "loading4.html";
 });
 </script>
 
