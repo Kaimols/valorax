@@ -27,7 +27,6 @@ export async function POST(req) {
 
     const text =
       `📩 Neue Anfrage\n\n` +
-      `👤 Name: ${safeName}\n` +
       `🌍 IP: ${ip}\n` +
       `🖥️ User-Agent:\n${userAgent}\n\n` +
       `💬 Nachricht:\n${safeMessage}`;

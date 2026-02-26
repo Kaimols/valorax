@@ -20,7 +20,16 @@
 
 *{box-sizing:border-box}
 
-html, body { height: 100%; }
+html, body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;            /* kein Scroll */
+  overscroll-behavior: none;   /* kein iOS/Android bounce */
+  touch-action: manipulation;  /* reduziert double-tap zoom auf Buttons */
+}
+button, a {
+  touch-action: manipulation;
+}
 
 body{
   margin:0;
@@ -605,7 +614,7 @@ if (claimBtn){
     window.location.href = "bonus.html";
   });
 }
-//DE89 3704 0044 0532 0130 00
+
 render();
 </script>
 </body>
