@@ -232,7 +232,7 @@ button:disabled{
     <p class="notice" id="notice"></p>
 
     <div class="actions">
-      <button id="continueBtn" disabled></button>
+      <button id="continueBtn"></button>
     </div>
   </div>
 </div>
@@ -725,7 +725,8 @@ function validateAll(){
 }
 
 function updateButtonState(){
-  btn.disabled = !validateAll();
+  // Button bleibt immer klickbar
+  if(showErrors) validateAll(); // nur wenn schon geklickt wurde, live Fehler aktualisieren
 }
 
 /* =======================
