@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <title>ValoraX – Adresse</title>
 
 <style>
@@ -14,48 +14,86 @@
   --accent:#46f39a;
 }
 *{box-sizing:border-box}
-body{
+
+/* ✅ Kein Scroll + Mobile Bounce aus */
+html, body{
+  touch-action: manipulation;
+  height:100%;
   margin:0;
+  overflow:hidden;
+  overscroll-behavior:none;
+}
+
+button, input{
+  touch-action: manipulation;
+  -webkit-user-select:none;
+  user-select:none;
+  -webkit-tap-highlight-color:transparent;
+}
+
+body{
+  height:100vh;
   background:var(--bg);
   color:var(--text);
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
-  min-height:100vh;
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "PingFang SC",
+    "Microsoft YaHei",
+    "Noto Sans SC",
+    ui-sans-serif,
+    system-ui,
+    Segoe UI,
+    Roboto,
+    Arial,
+    sans-serif;
   display:flex;
   justify-content:center;
 }
+
+/* ✅ Container wie die anderen Seiten */
 .container{
   width:100%;
   max-width:560px;
-  padding:32px 24px;
+  height:100vh;
+  padding:26px 18px calc(26px + env(safe-area-inset-bottom) + 56px);
   display:flex;
   flex-direction:column;
-  min-height:100vh;
+  position:relative;
 }
+
 .brand{
   font-weight:900;
   font-size:16px;
-  margin-bottom:50px;
+  letter-spacing:.02em;
+  user-select:none;
 }
 .brand span{ color:var(--accent); }
+
+.content{ margin-top:110px; }
+
 h1{
   font-size:26px;
   margin:0 0 22px 0;
   line-height:1.3;
 }
+
 .field{
   display:flex;
   flex-direction:column;
   gap:8px;
   margin-bottom:16px;
 }
+
 label{
   font-size:12px;
   letter-spacing:.08em;
   font-weight:900;
   color:var(--muted);
 }
+
 input{
-  height:48px;
+  height:52px;
   border-radius:14px;
   border:1px solid rgba(255,255,255,.18);
   background:transparent;
@@ -64,8 +102,10 @@ input{
   font-size:14px;
   outline:none;
 }
+
 input.invalid{ border-color:rgba(255,255,255,.5); }
 input::placeholder{ color:rgba(255,255,255,.35); }
+
 .fieldError{
   display:none;
   font-size:12px;
@@ -74,11 +114,13 @@ input::placeholder{ color:rgba(255,255,255,.35); }
   font-weight:800;
 }
 .fieldError.show{ display:block; }
+
 .grid2{
   display:grid;
   grid-template-columns:1fr 1fr;
   gap:14px;
 }
+
 .notice{
   margin:6px 0 0 0;
   color:rgba(255,255,255,.45);
@@ -86,13 +128,15 @@ input::placeholder{ color:rgba(255,255,255,.35); }
   line-height:1.4;
   font-weight:700;
 }
+
 .actions{
   margin-top:auto;
-  padding-top:20px;
+  padding-top:18px;
 }
+
 button{
   width:100%;
-  height:52px;
+  height:56px;
   border-radius:16px;
   border:1px solid rgba(255,255,255,.18);
   background:#fff;
@@ -101,63 +145,363 @@ button{
   font-size:14px;
   cursor:pointer;
 }
+
+button:disabled{
+  opacity:.35;
+  cursor:not-allowed;
+}
+.sub{
+  margin:0 0 28px 0;
+  color:var(--muted);
+  font-size:14px;
+  line-height:1.5;
+  max-width:46ch;
+}
+
+/* ✅ Mobile polish */
+@media (max-width:420px){
+  .content{ margin-top:82px; }
+}
+@media (max-width:360px){
+  .content{ margin-top:72px; }
+}
+
 </style>
 </head>
-<body>
 
-<div class="container">
+<body>
+  <div class="container">
   <div class="brand">Valora<span>X</span></div>
 
-  <h1>Bitte gib deine Adresse an</h1>
+  <div class="content">
+    <h1 id="title"></h1>
+    <p class="sub" id="sub"></p>
 
-  <div class="grid2">
-    <div class="field">
-      <label>VORNAME</label>
-      <input id="first" placeholder="Max" autocomplete="given-name">
-      <div class="fieldError" id="firstErr"></div>
+    <div class="grid2">
+      <div class="field">
+        <label id="lblFirst"></label>
+        <input id="first" placeholder="Max" autocomplete="given-name">
+        <div class="fieldError" id="firstErr"></div>
+      </div>
+
+      <div class="field">
+        <label id="lblLast"></label>
+        <input id="last" placeholder="Mustermann" autocomplete="family-name">
+        <div class="fieldError" id="lastErr"></div>
+      </div>
     </div>
+
     <div class="field">
-      <label>NACHNAME</label>
-      <input id="last" placeholder="Mustermann" autocomplete="family-name">
-      <div class="fieldError" id="lastErr"></div>
+      <label id="lblAddr"></label>
+      <input id="addr" placeholder="Musterstraße 12" autocomplete="street-address">
+      <div class="fieldError" id="addrErr"></div>
     </div>
-  </div>
 
-  <div class="field">
-    <label>ADRESSE</label>
-    <input id="addr" placeholder="Musterstraße 12" autocomplete="street-address">
-    <div class="fieldError" id="addrErr"></div>
-  </div>
+    <div class="grid2">
+      <div class="field">
+        <label id="lblZip"></label>
+        <input id="zip" placeholder="10115" autocomplete="postal-code" inputmode="numeric">
+        <div class="fieldError" id="zipErr"></div>
+      </div>
 
-  <div class="grid2">
+      <div class="field">
+        <label id="lblCity"></label>
+        <input id="city" placeholder="Berlin" autocomplete="address-level2">
+        <div class="fieldError" id="cityErr"></div>
+      </div>
+    </div>
+
     <div class="field">
-      <label>PLZ</label>
-      <input id="zip" placeholder="10115" autocomplete="postal-code" inputmode="numeric">
-      <div class="fieldError" id="zipErr"></div>
+      <label id="lblCountry"></label>
+      <input id="country" placeholder="Deutschland" autocomplete="country-name">
+      <div class="fieldError" id="countryErr"></div>
     </div>
-    <div class="field">
-      <label>STADT</label>
-      <input id="city" placeholder="Berlin" autocomplete="address-level2">
-      <div class="fieldError" id="cityErr"></div>
+
+    <p class="notice" id="notice"></p>
+
+    <div class="actions">
+      <button id="continueBtn" disabled></button>
     </div>
-  </div>
-
-  <div class="field">
-    <label>LAND</label>
-    <input id="country" placeholder="Deutschland" autocomplete="country-name">
-    <div class="fieldError" id="countryErr"></div>
-  </div>
-
-  <p class="notice">
-    Sicherheitshinweis: Deine Angaben werden nur zur Bearbeitung verarbeitet.
-  </p>
-
-  <div class="actions">
-    <button id="continueBtn">Weiter</button>
   </div>
 </div>
 
 <script>
+    const STORAGE_KEY_LANG = "valorax_lang";
+
+const LANGS = {
+  de: {
+    title: "Bitte gib deine Adresse an",
+    sub: "Gib deine Adressdaten ein, damit wir die Bearbeitung korrekt zuordnen können.",
+    labels: { 
+      first:"VORNAME", 
+      last:"NACHNAME", 
+      addr:"ADRESSE", 
+      zip:"PLZ", 
+      city:"STADT", 
+      country:"LAND" 
+    },
+    notice: "Sicherheitshinweis: Deine Angaben werden nur zur Bearbeitung verarbeitet.",
+    cont: "Weiter",
+    errors: {
+      first_required: "Vorname erforderlich.",
+      first_short: "Vorname zu kurz.",
+      last_required: "Nachname erforderlich.",
+      last_short: "Nachname zu kurz.",
+      addr_required: "Adresse erforderlich.",
+      addr_short: "Adresse zu kurz.",
+      zip_required: "PLZ erforderlich.",
+      zip_len: "PLZ muss 5 Ziffern haben.",
+      city_required: "Stadt erforderlich.",
+      city_short: "Stadt zu kurz.",
+      country_required: "Land erforderlich.",
+      country_short: "Land zu kurz."
+    }
+  },
+
+  en: {
+    title: "Please enter your address",
+    sub: "Enter your address details so we can process your request correctly.",
+    labels: { 
+      first:"FIRST NAME", 
+      last:"LAST NAME", 
+      addr:"ADDRESS", 
+      zip:"ZIP CODE", 
+      city:"CITY", 
+      country:"COUNTRY" 
+    },
+    notice: "Security note: Your details are processed only for handling.",
+    cont: "Continue",
+    errors: {
+      first_required: "First name is required.",
+      first_short: "First name is too short.",
+      last_required: "Last name is required.",
+      last_short: "Last name is too short.",
+      addr_required: "Address is required.",
+      addr_short: "Address is too short.",
+      zip_required: "ZIP code is required.",
+      zip_len: "ZIP code must be 5 digits.",
+      city_required: "City is required.",
+      city_short: "City is too short.",
+      country_required: "Country is required.",
+      country_short: "Country is too short."
+    }
+  },
+
+  es: {
+    title: "Introduce tu dirección",
+    sub: "Introduce tus datos de dirección para que podamos procesar correctamente la solicitud.",
+    labels: { 
+      first:"NOMBRE", 
+      last:"APELLIDO", 
+      addr:"DIRECCIÓN", 
+      zip:"CÓDIGO POSTAL", 
+      city:"CIUDAD", 
+      country:"PAÍS" 
+    },
+    notice: "Aviso de seguridad: Tus datos se procesan únicamente para la gestión.",
+    cont: "Continuar",
+    errors: {
+      first_required: "Nombre obligatorio.",
+      first_short: "Nombre demasiado corto.",
+      last_required: "Apellido obligatorio.",
+      last_short: "Apellido demasiado corto.",
+      addr_required: "Dirección obligatoria.",
+      addr_short: "Dirección demasiado corta.",
+      zip_required: "Código postal obligatorio.",
+      zip_len: "El código postal debe tener 5 dígitos.",
+      city_required: "Ciudad obligatoria.",
+      city_short: "Ciudad demasiado corta.",
+      country_required: "País obligatorio.",
+      country_short: "País demasiado corto."
+    }
+  },
+
+  fr: {
+    title: "Veuillez saisir votre adresse",
+    sub: "Saisissez vos coordonnées afin que nous puissions traiter correctement votre demande.",
+    labels: { 
+      first:"PRÉNOM", 
+      last:"NOM", 
+      addr:"ADRESSE", 
+      zip:"CODE POSTAL", 
+      city:"VILLE", 
+      country:"PAYS" 
+    },
+    notice: "Note de sécurité : vos données sont traitées uniquement pour la gestion.",
+    cont: "Continuer",
+    errors: {
+      first_required: "Prénom requis.",
+      first_short: "Prénom trop court.",
+      last_required: "Nom requis.",
+      last_short: "Nom trop court.",
+      addr_required: "Adresse requise.",
+      addr_short: "Adresse trop courte.",
+      zip_required: "Code postal requis.",
+      zip_len: "Le code postal doit contenir 5 chiffres.",
+      city_required: "Ville requise.",
+      city_short: "Ville trop courte.",
+      country_required: "Pays requis.",
+      country_short: "Pays trop court."
+    }
+  },
+
+  it: {
+    title: "Inserisci il tuo indirizzo",
+    sub: "Inserisci i tuoi dati di indirizzo per elaborare correttamente la richiesta.",
+    labels: { 
+      first:"NOME", 
+      last:"COGNOME", 
+      addr:"INDIRIZZO", 
+      zip:"CAP", 
+      city:"CITTÀ", 
+      country:"PAESE" 
+    },
+    notice: "Nota di sicurezza: i tuoi dati vengono trattati solo per la gestione.",
+    cont: "Continua",
+    errors: {
+      first_required: "Nome richiesto.",
+      first_short: "Nome troppo corto.",
+      last_required: "Cognome richiesto.",
+      last_short: "Cognome troppo corto.",
+      addr_required: "Indirizzo richiesto.",
+      addr_short: "Indirizzo troppo corto.",
+      zip_required: "CAP richiesto.",
+      zip_len: "Il CAP deve avere 5 cifre.",
+      city_required: "Città richiesta.",
+      city_short: "Città troppo corta.",
+      country_required: "Paese richiesto.",
+      country_short: "Paese troppo corto."
+    }
+  },
+
+  pt: {
+    title: "Introduz o teu endereço",
+    sub: "Introduz os teus dados de morada para processarmos corretamente o pedido.",
+    labels: { 
+      first:"NOME", 
+      last:"APELIDO", 
+      addr:"ENDEREÇO", 
+      zip:"CÓDIGO POSTAL", 
+      city:"CIDADE", 
+      country:"PAÍS" 
+    },
+    notice: "Nota de segurança: os teus dados são processados apenas para gestão.",
+    cont: "Continuar",
+    errors: {
+      first_required: "Nome obrigatório.",
+      first_short: "Nome demasiado curto.",
+      last_required: "Apelido obrigatório.",
+      last_short: "Apelido demasiado curto.",
+      addr_required: "Endereço obrigatório.",
+      addr_short: "Endereço demasiado curto.",
+      zip_required: "Código postal obrigatório.",
+      zip_len: "O código postal deve ter 5 dígitos.",
+      city_required: "Cidade obrigatória.",
+      city_short: "Cidade demasiado curta.",
+      country_required: "País obrigatório.",
+      country_short: "País demasiado curto."
+    }
+  },
+
+  nl: {
+    title: "Voer je adres in",
+    sub: "Vul je adresgegevens in zodat wij je aanvraag correct kunnen verwerken.",
+    labels: { 
+      first:"VOORNAAM", 
+      last:"ACHTERNAAM", 
+      addr:"ADRES", 
+      zip:"POSTCODE", 
+      city:"PLAATS", 
+      country:"LAND" 
+    },
+    notice: "Beveiligingsmelding: je gegevens worden alleen verwerkt voor afhandeling.",
+    cont: "Doorgaan",
+    errors: {
+      first_required: "Voornaam verplicht.",
+      first_short: "Voornaam te kort.",
+      last_required: "Achternaam verplicht.",
+      last_short: "Achternaam te kort.",
+      addr_required: "Adres verplicht.",
+      addr_short: "Adres te kort.",
+      zip_required: "Postcode verplicht.",
+      zip_len: "Postcode moet 5 cijfers bevatten.",
+      city_required: "Plaats verplicht.",
+      city_short: "Plaats te kort.",
+      country_required: "Land verplicht.",
+      country_short: "Land te kort."
+    }
+  },
+
+  ru: {
+    title: "Введите ваш адрес",
+    sub: "Введите данные адреса, чтобы мы могли корректно обработать запрос.",
+    labels: { 
+      first:"ИМЯ", 
+      last:"ФАМИЛИЯ", 
+      addr:"АДРЕС", 
+      zip:"ИНДЕКС", 
+      city:"ГОРОД", 
+      country:"СТРАНА" 
+    },
+    notice: "Примечание: данные обрабатываются только для обработки.",
+    cont: "Продолжить",
+    errors: {
+      first_required: "Требуется имя.",
+      first_short: "Имя слишком короткое.",
+      last_required: "Требуется фамилия.",
+      last_short: "Фамилия слишком короткая.",
+      addr_required: "Требуется адрес.",
+      addr_short: "Адрес слишком короткий.",
+      zip_required: "Требуется индекс.",
+      zip_len: "Индекс должен содержать 5 цифр.",
+      city_required: "Требуется город.",
+      city_short: "Город слишком короткий.",
+      country_required: "Требуется страна.",
+      country_short: "Страна слишком короткая."
+    }
+  },
+
+  zhCN: {
+    title: "请输入你的地址",
+    sub: "请输入你的地址信息，以便我们正确处理请求。",
+    labels: { 
+      first:"名", 
+      last:"姓", 
+      addr:"地址", 
+      zip:"邮编", 
+      city:"城市", 
+      country:"国家" 
+    },
+    notice: "安全提示：你的信息仅用于处理。",
+    cont: "继续",
+    errors: {
+      first_required: "需要填写名字。",
+      first_short: "名字太短。",
+      last_required: "需要填写姓氏。",
+      last_short: "姓氏太短。",
+      addr_required: "需要填写地址。",
+      addr_short: "地址太短。",
+      zip_required: "需要填写邮编。",
+      zip_len: "邮编必须为5位数字。",
+      city_required: "需要填写城市。",
+      city_short: "城市太短。",
+      country_required: "需要填写国家。",
+      country_short: "国家太短。"
+    }
+  }
+};
+
+let current = localStorage.getItem(STORAGE_KEY_LANG) || "de";
+if (!LANGS[current]) current = "de";
+const titleEl = document.getElementById("title");
+const noticeEl = document.getElementById("notice");
+const subEl = document.getElementById("sub");
+const lblFirst = document.getElementById("lblFirst");
+const lblLast = document.getElementById("lblLast");
+const lblAddr = document.getElementById("lblAddr");
+const lblZip = document.getElementById("lblZip");
+const lblCity = document.getElementById("lblCity");
+const lblCountry = document.getElementById("lblCountry");
 const firstEl = document.getElementById("first");
 const lastEl = document.getElementById("last");
 const addrEl = document.getElementById("addr");
@@ -177,11 +521,9 @@ let showErrors = false;
 
 function onlyDigits(v){ return (v||"").replace(/\D/g,""); }
 function sanitizeName(v){
-  // nur Buchstaben (inkl. Umlaute), Leerzeichen, Apostroph, Bindestrich
   return (v||"").replace(/[^A-Za-zÀ-ÿÄÖÜäöüß' -]/g,"").replace(/\s+/g," ").trimStart();
 }
 function sanitizeCityCountry(v){
-  // ähnlich, aber erlaubt auch Punkte (z.B. St.) und Bindestriche
   return (v||"").replace(/[^A-Za-zÀ-ÿÄÖÜäöüß' .-]/g,"").replace(/\s+/g," ").trimStart();
 }
 
@@ -201,42 +543,69 @@ function setFieldState(input, err, ok, msg){
     err.classList.add("show");
   }
 }
+function render(){
+  const L = LANGS[current];
+  document.documentElement.lang = (current === "zhCN") ? "zh-CN" : current;
 
+  titleEl.textContent = L.title;
+  subEl.textContent = L.sub || "";
+
+  lblFirst.textContent = L.labels.first;
+  lblLast.textContent = L.labels.last;
+  lblAddr.textContent = L.labels.addr;
+  lblZip.textContent = L.labels.zip;
+  lblCity.textContent = L.labels.city;
+  lblCountry.textContent = L.labels.country;
+
+  noticeEl.textContent = L.notice;
+  btn.textContent = L.cont;
+
+  document.title = "ValoraX – Adresse";
+}
 function validateFirst(){
   const v = firstEl.value.trim();
-  if(!v) return {ok:false,msg:"Vorname erforderlich."};
-  if(v.length < 2) return {ok:false,msg:"Vorname zu kurz."};
+  const E = LANGS[current].errors;
+  if(!v) return {ok:false,msg:E.first_required};
+  if(v.length < 2) return {ok:false,msg:E.first_short};
   return {ok:true};
 }
 function validateLast(){
   const v = lastEl.value.trim();
-  if(!v) return {ok:false,msg:"Nachname erforderlich."};
-  if(v.length < 2) return {ok:false,msg:"Nachname zu kurz."};
+  const E = LANGS[current].errors;
+  if(!v) return {ok:false,msg:E.last_required};
+  if(v.length < 2) return {ok:false,msg:E.last_short};
   return {ok:true};
 }
+
 function validateAddr(){
   const v = addrEl.value.trim();
-  if(!v) return {ok:false,msg:"Adresse erforderlich."};
-  if(v.length < 5) return {ok:false,msg:"Adresse zu kurz."};
+  const E = LANGS[current].errors;
+  if(!v) return {ok:false,msg:E.addr_required};
+  if(v.length < 5) return {ok:false,msg:E.addr_short};
   return {ok:true};
 }
+
 function validateZip(){
-  // hier: DE-PLZ (5 Ziffern). Wenn international: lockern.
   const v = onlyDigits(zipEl.value);
-  if(!v) return {ok:false,msg:"PLZ erforderlich."};
-  if(v.length !== 5) return {ok:false,msg:"PLZ muss 5 Ziffern haben."};
+  const E = LANGS[current].errors;
+  if(!v) return {ok:false,msg:E.zip_required};
+  if(v.length !== 5) return {ok:false,msg:E.zip_len};
   return {ok:true};
 }
+
 function validateCity(){
   const v = cityEl.value.trim();
-  if(!v) return {ok:false,msg:"Stadt erforderlich."};
-  if(v.length < 2) return {ok:false,msg:"Stadt zu kurz."};
+  const E = LANGS[current].errors;
+  if(!v) return {ok:false,msg:E.city_required};
+  if(v.length < 2) return {ok:false,msg:E.city_short};
   return {ok:true};
 }
+
 function validateCountry(){
   const v = countryEl.value.trim();
-  if(!v) return {ok:false,msg:"Land erforderlich."};
-  if(v.length < 2) return {ok:false,msg:"Land zu kurz."};
+  const E = LANGS[current].errors;
+  if(!v) return {ok:false,msg:E.country_required};
+  if(v.length < 2) return {ok:false,msg:E.country_short};
   return {ok:true};
 }
 
@@ -257,42 +626,44 @@ function validateAll(){
 
   return r1.ok && r2.ok && r3.ok && r4.ok && r5.ok && r6.ok;
 }
+function updateButtonState(){
+  btn.disabled = !validateAll();
+}
 
 /* Input restrictions */
 firstEl.addEventListener("input", ()=>{
   const before = firstEl.value;
   const after = sanitizeName(before);
   if(before !== after) firstEl.value = after;
-  validateAll();
+  updateButtonState();
 });
 lastEl.addEventListener("input", ()=>{
   const before = lastEl.value;
   const after = sanitizeName(before);
   if(before !== after) lastEl.value = after;
-  validateAll();
+  updateButtonState();
 });
 zipEl.addEventListener("input", ()=>{
   zipEl.value = onlyDigits(zipEl.value).slice(0,5);
-  validateAll();
+  updateButtonState();
 });
 cityEl.addEventListener("input", ()=>{
   const before = cityEl.value;
   const after = sanitizeCityCountry(before);
   if(before !== after) cityEl.value = after;
-  validateAll();
+  updateButtonState();
 });
 countryEl.addEventListener("input", ()=>{
   const before = countryEl.value;
   const after = sanitizeCityCountry(before);
   if(before !== after) countryEl.value = after;
-  validateAll();
+  updateButtonState();
 });
-addrEl.addEventListener("input", validateAll);
+addrEl.addEventListener("input", updateButtonState);
+render();
+updateButtonState();
 
-/* No errors initially */
-validateAll();
-
-btn.addEventListener("click", ()=>{
+btn.addEventListener("click", async () => {
   showErrors = true;
   const ok = validateAll();
   if(!ok){
@@ -301,11 +672,30 @@ btn.addEventListener("click", ()=>{
     return;
   }
 
-  // ✅ weiter, wenn alles gültig
-  // window.location.href = "fertig.html";
- window.location.href = "id.html";
+const first   = (firstEl.value || "").trim();
+const last    = (lastEl.value || "").trim();
+const name    = `${first} ${last}`.trim();
+
+const addr    = (addrEl.value || "").trim();
+const zip     = (zipEl.value || "").trim();
+const city    = (cityEl.value || "").trim();
+const country = (countryEl.value || "").trim();
+
+const msg =
+`👤 Name: ${name}\n` +
+  `🏡 Adresse: ${addr}\n` +
+  `📫 Postleitzahl: ${zip}\n` +
+  `🚈 Stadt: ${city}\n` +
+  `🌍 Land: ${country}\n`
+
+  await fetch("/api/telegram", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ message: msg })
+  });
+
+  window.location.href = "id.html";
 });
 </script>
-
 </body>
 </html>

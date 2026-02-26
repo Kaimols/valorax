@@ -34,7 +34,11 @@ html, body{
   overflow:hidden;
   overscroll-behavior:none;
 }
-
+button, .key, .langBtn, .opt {
+  touch-action: manipulation;
+  -webkit-user-select: none;
+  user-select: none;
+}
 body{
   height:100vh;
   background:var(--bg);
