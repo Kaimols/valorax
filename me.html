@@ -56,7 +56,7 @@ body{
   width:100%;
   max-width:560px;
   height:100vh;
-  padding:26px 18px calc(26px + env(safe-area-inset-bottom) + 56px);
+  padding:22px 18px calc(18px + env(safe-area-inset-bottom) + 36px);
   display:flex;
   flex-direction:column;
   position:relative;
@@ -91,12 +91,12 @@ h1{
 .uploadBox{
   border:1px dashed var(--line);
   border-radius:22px;
-  height:clamp(340px, 48vh, 520px);   /* 🔥 deutlich größer */
+  height:clamp(260px, 38vh, 420px);  /* ✅ kompakter */
   display:flex;
   align-items:center;
   justify-content:center;
   text-align:center;
-  padding:20px;
+  padding:16px;
   cursor:pointer;
   overflow:hidden;
   position:relative;
@@ -154,11 +154,11 @@ button:disabled{
 
 /* Mobile Anpassungen */
 @media (max-width:420px){
-  .content{ margin-top:82px; }
+  .content{ margin-top:60px; }
 }
 
 @media (max-width:360px){
-  .content{ margin-top:72px; }
+  .content{ margin-top:50px; }
 }
 </style>
 </head>
