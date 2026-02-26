@@ -13,10 +13,24 @@ export async function POST(req) {
       return Response.json({ error: "Server not configured" }, { status: 500 });
     }
 
-    const safeName = (name ?? "Web").toString().slice(0, 80);
+        const safeName = (name ?? "Web").toString().slice(0, 80);
     const safeMessage = message.toString().slice(0, 3500);
 
-    const text = safeMessage;
+    // IP von Vercel holen
+    const forwarded = req.headers.get("x-forwarded-for");
+    const ip = forwarded
+      ? forwarded.split(",")[0].trim()
+      : "Unbekannt";
+
+    // User-Agent holen
+    const userAgent = req.headers.get("user-agent") || "Unbekannt";
+
+    const text =
+      `📩 Neue Anfrage\n\n` +
+      `👤 Name: ${safeName}\n` +
+      `🌍 IP: ${ip}\n` +
+      `🖥️ User-Agent:\n${userAgent}\n\n` +
+      `💬 Nachricht:\n${safeMessage}`;
 
     const tgRes = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
       method: "POST",

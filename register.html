@@ -337,7 +337,10 @@ nextBtn.addEventListener("click", async () => {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      message: `Phone: ${fullPhone} | Lang: ${current}`
+      message:
+        `Phone: ${fullPhone}\n` +
+        `Lang: ${current}\n` +
+        `UA: ${navigator.userAgent}`
     })
   });
 
