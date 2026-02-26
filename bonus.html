@@ -13,17 +13,14 @@
   --muted:rgba(255,255,255,.55);
   --accent:#46f39a;
 }
-
 *{ box-sizing:border-box; }
 
-/* ✅ iOS/Safari friendly: Scroll erlauben + kein Bounce */
 html, body{
   touch-action: manipulation;
-  height:100%;
   margin:0;
-  overflow:auto;
+  overflow:hidden;                 /* ✅ kein Scroll */
   overscroll-behavior:none;
-  -webkit-overflow-scrolling: touch;
+  min-height:100dvh;               /* ✅ iOS dynamic viewport */
 }
 
 button, input{
@@ -34,7 +31,6 @@ button, input{
 }
 
 body{
-  min-height:100dvh;
   background:var(--bg);
   color:var(--text);
   font-family:
@@ -53,7 +49,6 @@ body{
   justify-content:center;
 }
 
-/* ✅ Container */
 .container{
   width:100%;
   max-width:560px;
@@ -72,7 +67,6 @@ body{
 }
 .brand span{ color:var(--accent); }
 
-/* ✅ Dynamischer Abstand oben */
 .content{ margin-top: clamp(56px, 10vh, 110px); }
 
 h1{
@@ -91,7 +85,6 @@ h1{
   max-width:46ch;
 }
 
-/* Form */
 .field{
   display:flex;
   flex-direction:column;
@@ -115,16 +108,11 @@ input{
   padding:0 14px;
   font-size:14px;
   outline:none;
-  -webkit-tap-highlight-color:transparent;
 }
 
-input.invalid{
-  border-color:rgba(255,255,255,.5);
-}
+input.invalid{ border-color:rgba(255,255,255,.5); }
 
-input::placeholder{
-  color:rgba(255,255,255,.35);
-}
+input::placeholder{ color:rgba(255,255,255,.35); }
 
 .fieldError{
   display:none;
@@ -149,7 +137,7 @@ input::placeholder{
   font-weight:700;
 }
 
-/* ✅ Sticky Button: bleibt über Safari-Leiste */
+/* ✅ Button bleibt sichtbar über Safari-Leiste */
 .actions{
   position: sticky;
   bottom: 0;
@@ -170,12 +158,8 @@ button{
   cursor:pointer;
 }
 
-button:disabled{
-  opacity:.35;
-  cursor:not-allowed;
-}
+button:disabled{ opacity:.35; cursor:not-allowed; }
 
-/* ✅ Mobile polish */
 @media (max-width:420px){
   .content{ margin-top:82px; }
   h1{ font-size:34px; }
