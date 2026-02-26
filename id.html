@@ -185,7 +185,7 @@ const STORAGE_KEY_LANG = "valorax_lang";
 const LANGS = {
   de: {
     title: "Bestätige deine Identität",
-    sub: "Bitte fotografiere die Vorderseite deines Ausweises. Achte darauf, dass alle Daten gut lesbar sind.",
+    sub: "Bitte fotografiere die Vorderseite deines Bildes. Achte darauf, dass alle Daten gut lesbar sind.",
     tapToPhoto: "Tippe zum Fotografieren",
     tapToShoot: "Tippe zum Auslösen",
     camError: "Kamera konnte nicht geöffnet werden.<br>Bitte erlaube Kamera-Zugriff.",
@@ -437,6 +437,7 @@ btn.addEventListener("click", async () => {
 
 // Initialer Zustand
 setMessage("Tippe zum Fotografieren");
+render(); // ❗ GANZ WICHTIG
 </script>
 
 </body>
