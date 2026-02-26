@@ -138,16 +138,10 @@ button:disabled{
   cursor:not-allowed;
 }
 
-.cameraOverlay{
-  position:absolute;
-  width:82%;
-  height:60%;
+.uploadBox video{
   border:2px solid var(--accent);
   border-radius:18px;
-  pointer-events:none;
-  box-shadow:
-    0 0 12px var(--accent),
-    0 0 0 9999px rgba(0,0,0,.35);
+  box-shadow: 0 0 12px var(--accent);
 }
 
 /* ✅ Mobile polish */
@@ -316,10 +310,6 @@ async function startCamera(){
 
     uploadBox.innerHTML = "";
     uploadBox.appendChild(videoEl);
-
-    const overlay = document.createElement("div");
-    overlay.className = "cameraOverlay";
-    uploadBox.appendChild(overlay);
 
     const hint = document.createElement("div");
     hint.className = "uploadText";
