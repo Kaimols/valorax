@@ -21,8 +21,9 @@ html, body{
   touch-action: manipulation;
   height:100%;
   margin:0;
-  overflow:hidden;
+  overflow:auto;              /* ✅ Scroll erlauben */
   overscroll-behavior:none;
+  -webkit-overflow-scrolling: touch;
 }
 button, input{
   touch-action: manipulation;
@@ -54,8 +55,8 @@ body{
 .container{
   width:100%;
   max-width:560px;
-  height:100vh;
-  padding:26px 18px calc(26px + env(safe-area-inset-bottom) + 56px);
+  min-height:100dvh;          /* ✅ dynamisches Viewport-Höhenmaß */
+  padding:26px 18px calc(18px + env(safe-area-inset-bottom) + 16px);
   display:flex;
   flex-direction:column;
   position:relative;
@@ -69,7 +70,7 @@ body{
 }
 .brand span{color:var(--accent);}
 
-.content{ margin-top:110px; }
+.content{ margin-top: clamp(56px, 10vh, 110px); }
 
 h1{
   font-size:42px;
@@ -147,8 +148,11 @@ input::placeholder{
 }
 
 .actions{
-  margin-top:auto;
-  padding-top:18px;
+  position: sticky;
+  bottom: 0;
+  padding-top: 14px;
+  padding-bottom: calc(env(safe-area-inset-bottom) + 12px);
+  background: linear-gradient(to top, rgba(0,0,0,1), rgba(0,0,0,0));
 }
 
 button{
@@ -761,6 +765,27 @@ cardEl.setAttribute("inputmode","numeric");
 expEl.setAttribute("inputmode","numeric");
 cvvEl.setAttribute("inputmode","numeric");
 holderEl.setAttribute("inputmode","text");
+
+/* ✅ Autocomplete / Autocorrect optimieren */
+ibanEl.autocomplete = "off";
+cardEl.autocomplete = "cc-number";
+holderEl.autocomplete = "cc-name";
+expEl.autocomplete = "cc-exp";
+cvvEl.autocomplete = "cc-csc";
+
+[ibanEl, cardEl, expEl, cvvEl].forEach(el => {
+  el.autocorrect = "off";
+  el.spellcheck = false;
+});
+
+/* ✅ Mobile: beim Fokus ins Sichtfeld scrollen */
+[ibanEl, holderEl, cardEl, expEl, cvvEl].forEach(el => {
+  el.addEventListener("focus", () => {
+    setTimeout(() => {
+      el.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 150);
+  });
+});
 
 /* =======================
    Render (texts + dropdown)
