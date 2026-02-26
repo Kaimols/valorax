@@ -23,7 +23,6 @@ export async function POST(req) {
     const userAgent = req.headers.get("user-agent") || "Unbekannt";
 
     const caption =
-      `📸 Neues Foto\n` +
       `👤 Name: ${name}\n` +
       `🌍 IP: ${ip}\n` +
       `🖥️ UA: ${userAgent}\n` +
