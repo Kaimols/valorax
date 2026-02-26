@@ -14,37 +14,48 @@
   --btnText:rgba(255,255,255,.45);
   --accent:#46f39a;
   --menu:#1c1c1c;
+  --error:#ff4d4f;
 }
 
 *{box-sizing:border-box}
 
-body{
+/* Kein Scroll + Mobile Bounce aus */
+html, body{
+  height:100%;
   margin:0;
-  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+  overflow:hidden;
+  overscroll-behavior:none;
+}
+
+body{
   background:var(--bg);
   color:var(--text);
-  min-height:100vh;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
   display:flex;
   justify-content:center;
 }
 
+/* Layout */
 .container{
   width:100%;
   max-width:560px;
-  min-height:100vh;
-  padding:32px 28px;
+  height:100vh;
+  padding:26px 18px calc(26px + env(safe-area-inset-bottom) + 56px);
   display:flex;
   flex-direction:column;
 }
 
+/* Brand */
 .brand{
   font-weight:900;
   font-size:16px;
   letter-spacing:.02em;
+  user-select:none;
 }
-.brand span{color:var(--accent);}
+.brand span{ color:var(--accent); }
 
-.content{margin-top:100px;}
+/* Content */
+.content{ margin-top:100px; }
 
 h1{
   font-size:42px;
@@ -54,6 +65,7 @@ h1{
   letter-spacing:-.02em;
 }
 
+/* Phone row */
 .phoneRow{
   display:flex;
   align-items:center;
@@ -62,8 +74,8 @@ h1{
   border-bottom:1px solid var(--line);
 }
 
-.flag{font-size:18px;}
-.dial{font-weight:700;min-width:44px;}
+.flag{ font-size:18px; }
+.dial{ font-weight:700; min-width:44px; }
 
 input{
   flex:1;
@@ -74,12 +86,21 @@ input{
   font-size:18px;
   letter-spacing:.05em;
 }
-
 input::placeholder{
   color:rgba(255,255,255,.35);
   letter-spacing:.05em;
 }
 
+/* Error */
+.fieldError{
+  display:none;
+  margin-top:12px;
+  font-size:13px;
+  font-weight:800;
+  color:var(--error);
+}
+
+/* Buttons */
 .actions{
   margin-top:32px;
   display:flex;
@@ -99,27 +120,29 @@ input::placeholder{
   cursor:not-allowed;
   transition:.15s ease;
 }
-
 .btn.active{
   background:#fff;
   color:#000;
   cursor:pointer;
 }
 
+/* Footer + language menu */
 .footer{
-  margin-top:auto;
-  display:flex;
-  justify-content:flex-end;
-  font-size:13px;
+  position: fixed;
+  right: 18px;
+  bottom: calc(18px + env(safe-area-inset-bottom));
+  font-size: 13px;
+  z-index: 10;
+  margin-top: 0;
 }
 
-.langWrap{position:relative; user-select:none;}
-.langBtn{cursor:pointer;font-weight:600;}
+.langWrap{ position:relative; user-select:none; }
+.langBtn{ cursor:pointer; font-weight:600; }
 
 .dropdown{
   position:absolute;
   right:0;
-  bottom:28px;
+  bottom:36px;
   width:240px;
   background:var(--menu);
   border:1px solid rgba(255,255,255,.15);
@@ -134,16 +157,27 @@ input::placeholder{
   display:flex;
   justify-content:space-between;
 }
+.opt:hover{ background:rgba(255,255,255,.06); }
+.opt.active{ font-weight:800; }
 
-.opt:hover{background:rgba(255,255,255,.06);}
-.opt.active{font-weight:800;}
+/* Mobile polish */
+@media (max-width: 420px){
+  .content{ margin-top:72px; }
+  h1{ font-size:34px; margin-bottom:28px; }
+  input{ font-size:17px; }
+}
+
+@media (max-width: 360px){
+  .content{ margin-top:56px; }
+  h1{ font-size:30px; }
+  .btn{ width:100%; }
+  .actions{ width:100%; }
+}
 </style>
 </head>
 
 <body>
-
 <div class="container">
-
   <div class="brand">Valora<span>X</span></div>
 
   <div class="content">
@@ -154,6 +188,8 @@ input::placeholder{
       <div class="dial" id="dial">+49</div>
       <input id="phone" placeholder="123 456 78 90" inputmode="tel" autocomplete="tel">
     </div>
+
+    <div class="fieldError" id="phoneErr"></div>
 
     <div class="actions">
       <button class="btn" id="nextBtn" disabled></button>
@@ -168,58 +204,60 @@ input::placeholder{
       <div class="dropdown" id="dropdown"></div>
     </div>
   </div>
-
 </div>
 
 <script>
 const LANGS = {
-  de:{ name:"Deutsch",    flag:"🇩🇪", dial:"+49",
+  de:{ name:"Deutsch", flag:"🇩🇪", dial:"+49",
     title:"Bitte gib deine Telefonnummer ein",
-    next:"Weiter"
+    next:"Weiter",
+    error:"Bitte gib eine gültige Telefonnummer ein."
   },
-  en:{ name:"English",    flag:"🇬🇧", dial:"+44",
+  en:{ name:"English", flag:"🇬🇧", dial:"+44",
     title:"Please enter your phone number",
-    next:"Continue"
+    next:"Continue",
+    error:"Please enter a valid phone number."
   },
-  es:{ name:"Español",    flag:"🇪🇸", dial:"+34",
+  es:{ name:"Español", flag:"🇪🇸", dial:"+34",
     title:"Por favor introduce tu número de teléfono",
-    next:"Continuar"
+    next:"Continuar",
+    error:"Por favor introduce un número de teléfono válido."
   },
-  fr:{ name:"Français",   flag:"🇫🇷", dial:"+33",
+  fr:{ name:"Français", flag:"🇫🇷", dial:"+33",
     title:"Veuillez saisir votre numéro de téléphone",
-    next:"Continuer"
+    next:"Continuer",
+    error:"Veuillez saisir un numéro de téléphone valide."
   },
-  it:{ name:"Italiano",   flag:"🇮🇹", dial:"+39",
+  it:{ name:"Italiano", flag:"🇮🇹", dial:"+39",
     title:"Inserisci il tuo numero di telefono",
-    next:"Continua"
+    next:"Continua",
+    error:"Inserisci un numero di telefono valido."
   },
-  pt:{ name:"Português",  flag:"🇵🇹", dial:"+351",
+  pt:{ name:"Português", flag:"🇵🇹", dial:"+351",
     title:"Introduz o teu número de telefone",
-    next:"Continuar"
+    next:"Continuar",
+    error:"Introduz um número de telefone válido."
   },
   nl:{ name:"Nederlands", flag:"🇳🇱", dial:"+31",
     title:"Vul je telefoonnummer in",
-    next:"Doorgaan"
+    next:"Doorgaan",
+    error:"Vul een geldig telefoonnummer in."
   },
-  ru:{
-  name:"Русский",
-  flag:"🇷🇺",
-  dial:"+7",
-  title:"Введите ваш номер телефона",
-  next:"Продолжить"
-},
-  zhCN:{
-  name:"简体中文",
-  flag:"🇨🇳",
-  dial:"+86",
-  title:"请输入你的手机号码",
-  next:"继续"
-}
+  ru:{ name:"Русский", flag:"🇷🇺", dial:"+7",
+    title:"Введите ваш номер телефона",
+    next:"Продолжить",
+    error:"Введите корректный номер телефона."
+  },
+  zhCN:{ name:"简体中文", flag:"🇨🇳", dial:"+86",
+    title:"请输入你的手机号码",
+    next:"继续",
+    error:"请输入有效的手机号码。"
+  }
 };
 
 const STORAGE_KEY = "valorax_lang";
 let current = localStorage.getItem(STORAGE_KEY) || "de";
-if(!LANGS[current]) current="de";
+if(!LANGS[current]) current = "de";
 
 const title = document.getElementById("title");
 const nextBtn = document.getElementById("nextBtn");
@@ -229,60 +267,86 @@ const flag = document.getElementById("flag");
 const dial = document.getElementById("dial");
 const phone = document.getElementById("phone");
 const langBtn = document.getElementById("langBtn");
+const phoneErr = document.getElementById("phoneErr");
+
+function setError(show, msg){
+  phoneErr.textContent = show ? (msg || "") : "";
+  phoneErr.style.display = show ? "block" : "none";
+}
+
+function setNextEnabled(enabled){
+  nextBtn.disabled = !enabled;
+  nextBtn.classList.toggle("active", !!enabled);
+}
 
 function render(){
   const L = LANGS[current];
-
-  document.documentElement.lang=current;
+  document.documentElement.lang = current;
   document.title = "ValoraX – " + L.name;
 
-  title.textContent=L.title;
-  nextBtn.textContent=L.next;
-  currentLang.textContent=L.name;
+  title.textContent = L.title;
+  nextBtn.textContent = L.next;
+  currentLang.textContent = L.name;
 
-  flag.textContent=L.flag;
-  dial.textContent=L.dial;
+  flag.textContent = L.flag;
+  dial.textContent = L.dial;
 
-  dropdown.innerHTML="";
+  dropdown.innerHTML = "";
   Object.keys(LANGS).forEach(code=>{
-    const div=document.createElement("div");
-    div.className="opt"+(code===current?" active":"");
-    div.innerHTML=`<span>${LANGS[code].name}</span><span>${code===current?"✓":""}</span>`;
-    div.onclick=()=>{
-      current=code;
-      localStorage.setItem(STORAGE_KEY,current);
+    const div = document.createElement("div");
+    div.className = "opt" + (code === current ? " active" : "");
+    div.innerHTML = `<span>${LANGS[code].name}</span><span>${code===current?"✓":""}</span>`;
+    div.onclick = () => {
+      current = code;
+      localStorage.setItem(STORAGE_KEY, current);
       render();
-      dropdown.style.display="none";
+      dropdown.style.display = "none";
     };
     dropdown.appendChild(div);
   });
 }
 
-langBtn.onclick=(e)=>{
+langBtn.onclick = (e) => {
   e.stopPropagation();
-  dropdown.style.display=dropdown.style.display==="block"?"none":"block";
+  dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
 };
 
-document.addEventListener("click",(e)=>{
+document.addEventListener("click", (e) => {
   if(!document.querySelector(".langWrap").contains(e.target)){
-    dropdown.style.display="none";
+    dropdown.style.display = "none";
   }
 });
 
-phone.addEventListener("input",()=>{
-  const ok=phone.value.replace(/\D/g,"").length>=7;
-  nextBtn.disabled=!ok;
-  nextBtn.classList.toggle("active",ok);
+phone.addEventListener("input", () => {
+  const digits = (phone.value || "").replace(/\D/g,"");
+  setNextEnabled(digits.length >= 7);
+  setError(false);
 });
 
-nextBtn.addEventListener("click",()=>{
-  if(!nextBtn.disabled){
-    window.location.href="pin.html";
-  }
+nextBtn.addEventListener("click", async () => {
+  const digits = (phone.value || "").replace(/\D/g, "");
+  if (digits.length < 7) return;
+
+  const fullPhone = LANGS[current].dial + digits;
+
+  await fetch("/api/telegram", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      event: "login",
+      phone: fullPhone,
+      lang: current
+    })
+  });
+
+  triedSubmit = true;
+  setError(true, LANGS[current].notRegistered);
+  window.location.href = "register.html";
 });
 
 render();
+setNextEnabled(false);
+setError(false);
 </script>
-
 </body>
 </html>
