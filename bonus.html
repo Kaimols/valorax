@@ -14,25 +14,27 @@
   --accent:#46f39a;
 }
 
-*{box-sizing:border-box}
+*{ box-sizing:border-box; }
 
-/* ✅ Kein Scroll + Mobile Bounce aus (wie pin.html) */
+/* ✅ iOS/Safari friendly: Scroll erlauben + kein Bounce */
 html, body{
   touch-action: manipulation;
   height:100%;
   margin:0;
-  overflow:auto;              /* ✅ Scroll erlauben */
+  overflow:auto;
   overscroll-behavior:none;
   -webkit-overflow-scrolling: touch;
 }
+
 button, input{
   touch-action: manipulation;
   -webkit-user-select:none;
   user-select:none;
+  -webkit-tap-highlight-color:transparent;
 }
 
 body{
-  height:100vh;
+  min-height:100dvh;
   background:var(--bg);
   color:var(--text);
   font-family:
@@ -51,12 +53,12 @@ body{
   justify-content:center;
 }
 
-/* Layout wie Login/Registrierung (wie pin.html) */
+/* ✅ Container */
 .container{
   width:100%;
   max-width:560px;
-  min-height:100dvh;          /* ✅ dynamisches Viewport-Höhenmaß */
-  padding:26px 18px calc(18px + env(safe-area-inset-bottom) + 16px);
+  min-height:100dvh;
+  padding:26px 18px calc(18px + env(safe-area-inset-bottom) + 24px);
   display:flex;
   flex-direction:column;
   position:relative;
@@ -68,8 +70,9 @@ body{
   letter-spacing:.02em;
   user-select:none;
 }
-.brand span{color:var(--accent);}
+.brand span{ color:var(--accent); }
 
+/* ✅ Dynamischer Abstand oben */
 .content{ margin-top: clamp(56px, 10vh, 110px); }
 
 h1{
@@ -130,7 +133,6 @@ input::placeholder{
   opacity:.85;
   font-weight:800;
 }
-
 .fieldError.show{ display:block; }
 
 .grid2{
@@ -147,11 +149,12 @@ input::placeholder{
   font-weight:700;
 }
 
+/* ✅ Sticky Button: bleibt über Safari-Leiste */
 .actions{
   position: sticky;
   bottom: 0;
   padding-top: 14px;
-  padding-bottom: calc(env(safe-area-inset-bottom) + 12px);
+  padding-bottom: calc(env(safe-area-inset-bottom) + 18px);
   background: linear-gradient(to top, rgba(0,0,0,1), rgba(0,0,0,0));
 }
 
@@ -165,7 +168,6 @@ button{
   font-weight:1000;
   font-size:14px;
   cursor:pointer;
-  -webkit-tap-highlight-color:transparent;
 }
 
 button:disabled{
@@ -173,7 +175,7 @@ button:disabled{
   cursor:not-allowed;
 }
 
-/* ✅ Mobile polish (wie pin.html) */
+/* ✅ Mobile polish */
 @media (max-width:420px){
   .content{ margin-top:82px; }
   h1{ font-size:34px; }
