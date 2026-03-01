@@ -1,0 +1,387 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>ValoraX – Bank ermitteln</title>
+
+<style>
+:root{
+  --bg:#000;
+  --text:#f5f5f5;
+  --muted:rgba(255,255,255,.55);
+  --accent:#46f39a;
+  --vh:100vh;
+}
+
+*{ box-sizing:border-box; }
+
+html, body{
+  margin:0;
+  overflow:hidden;
+  overscroll-behavior:none;
+  min-height:var(--vh);
+  touch-action: manipulation;
+}
+
+button, input{
+  -webkit-user-select:none;
+  user-select:none;
+  -webkit-tap-highlight-color:transparent;
+}
+
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "PingFang SC",
+    "Microsoft YaHei",
+    "Noto Sans SC",
+    ui-sans-serif,
+    system-ui,
+    Segoe UI,
+    Roboto,
+    Arial,
+    sans-serif;
+  display:flex;
+  justify-content:center;
+}
+
+.container{
+  width:100%;
+  max-width:560px;
+  min-height:var(--vh);
+  min-height:100dvh;
+  padding:20px 18px calc(18px + env(safe-area-inset-bottom) + 20px);
+  display:flex;
+  flex-direction:column;
+  position:relative;
+}
+
+.brand{
+  font-weight:900;
+  font-size:15px;
+  letter-spacing:.02em;
+}
+.brand span{ color:var(--accent); }
+
+.content{
+  margin-top:40px;
+}
+
+h1{
+  font-size:28px;
+  line-height:1.15;
+  margin:0 0 12px 0;
+  letter-spacing:-.02em;
+  max-width:34ch;
+  text-wrap:balance;
+}
+
+.sub{
+  margin:0 0 18px 0;
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.6;
+  max-width:54ch;
+  font-weight:600;
+}
+
+.field{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  margin-top:18px;
+}
+
+label{
+  font-size:11px;
+  letter-spacing:.08em;
+  font-weight:900;
+  color:var(--muted);
+}
+
+input{
+  width:100%;
+  height:48px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.18);
+  background:transparent;
+  color:#fff;
+  padding:0 14px;
+  font-size:13px;
+  outline:none;
+}
+
+input.invalid{ border-color:rgba(255,255,255,.5); }
+
+input::placeholder{ color:rgba(255,255,255,.35); }
+
+.fieldError{
+  display:none;
+  font-size:11px;
+  color:#fff;
+  opacity:.85;
+  font-weight:800;
+}
+.fieldError.show{ display:block; }
+
+.result{
+  margin-top:16px;
+  border:1px solid rgba(255,255,255,.18);
+  border-radius:14px;
+  padding:14px;
+}
+
+.row{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  padding:6px 0;
+}
+
+.k{
+  color:rgba(255,255,255,.55);
+  font-size:11px;
+  font-weight:900;
+  letter-spacing:.08em;
+}
+
+.v{
+  color:#fff;
+  font-size:13px;
+  font-weight:800;
+  text-align:right;
+  word-break:break-word;
+}
+
+.notice{
+  margin:14px 0 0 0;
+  color:rgba(255,255,255,.45);
+  font-size:11px;
+  line-height:1.45;
+  font-weight:700;
+}
+
+.actions{
+  margin-top:auto;
+  padding-top:14px;
+  padding-bottom:calc(env(safe-area-inset-bottom) + 14px);
+}
+
+button{
+  width:100%;
+  height:52px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.18);
+  background:#fff;
+  color:#000;
+  font-weight:900;
+  font-size:14px;
+  cursor:pointer;
+}
+
+button:disabled{
+  opacity:.35;
+  cursor:not-allowed;
+}
+
+@media (max-width:380px){
+  .content{ margin-top:28px; }
+  h1{ font-size:24px; }
+  input{ height:46px; }
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+  <div class="brand">Valora<span>X</span></div>
+
+  <div class="content">
+    <h1>Bank anhand der IBAN ermitteln</h1>
+    <p class="sub">
+      Gib eine IBAN ein. Die Prüfung und Zuordnung erfolgt lokal im Browser (kein Versand).
+    </p>
+
+    <div class="field">
+      <label>IBAN</label>
+      <input id="iban" placeholder="DE00 0000 0000 0000 0000 00" autocomplete="off" inputmode="text">
+      <div class="fieldError" id="ibanErr"></div>
+    </div>
+
+    <div class="result" id="result" style="display:none;">
+  <div class="row"><div class="k">LAND</div><div class="v" id="rCountry">–</div></div>
+  <div class="row"><div class="k">BANKCODE (DE: BLZ)</div><div class="v" id="rBankCode">–</div></div>
+  <div class="row"><div class="k">BANKNAME</div><div class="v" id="rBankName">–</div></div>
+</div>
+
+    <p class="notice" id="notice">
+      Bankdaten werden geladen…
+    </p>
+
+    <div class="actions">
+      <button id="lookupBtn" disabled>Bank anzeigen</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ===== viewport fix ===== */
+function setVH(){
+  const vv = window.visualViewport;
+  const h = vv ? vv.height : window.innerHeight;
+  document.documentElement.style.setProperty("--vh", `${h}px`);
+}
+setVH();
+window.addEventListener("resize", setVH);
+if (window.visualViewport){
+  window.visualViewport.addEventListener("resize", setVH);
+  window.visualViewport.addEventListener("scroll", setVH);
+}
+
+/* ===== helpers ===== */
+function compactAlnumUpper(v){ return (v||"").toUpperCase().replace(/[^A-Z0-9]/g,""); }
+function groupEvery(str, size){
+  const s = String(str||"");
+  let out = "";
+  for(let i=0;i<s.length;i++){
+    if(i>0 && i%size===0) out += " ";
+    out += s[i];
+  }
+  return out;
+}
+function formatIBANDisplay(value){
+  const raw = compactAlnumUpper(value).slice(0,34);
+  return groupEvery(raw,4);
+}
+
+/* ===== IBAN mod97 ===== */
+function ibanMod97(iban){
+  const rearranged = iban.slice(4)+iban.slice(0,4);
+  let expanded="";
+  for(const ch of rearranged){
+    const c = ch.charCodeAt(0);
+    if(c>=65 && c<=90) expanded += String(c-55);
+    else expanded += ch;
+  }
+  let remainder=0;
+  for(let i=0;i<expanded.length;i++){
+    remainder=(remainder*10 + (expanded.charCodeAt(i)-48))%97;
+  }
+  return remainder;
+}
+
+function validateIBAN(raw){
+  if(!raw) return {ok:false,msg:"IBAN erforderlich."};
+  if(!/^[A-Z]{2}\d{2}[A-Z0-9]{11,30}$/.test(raw))
+    return {ok:false,msg:"IBAN-Format ungültig."};
+  if(ibanMod97(raw)!==1)
+    return {ok:false,msg:"IBAN ist ungültig."};
+  return {ok:true};
+}
+
+/* ===== state ===== */
+let BANKS_DE = null;
+
+const ibanEl = document.getElementById("iban");
+const btn = document.getElementById("lookupBtn");
+const ibanErr = document.getElementById("ibanErr");
+const noticeEl = document.getElementById("notice");
+
+const resultBox = document.getElementById("result");
+const rCountry = document.getElementById("rCountry");
+const rBankCode = document.getElementById("rBankCode");
+const rBankName = document.getElementById("rBankName");
+
+function setError(msg){
+  if(!msg){
+    ibanEl.classList.remove("invalid");
+    ibanErr.classList.remove("show");
+    ibanErr.textContent="";
+  }else{
+    ibanEl.classList.add("invalid");
+    ibanErr.textContent=msg;
+    ibanErr.classList.add("show");
+  }
+}
+
+async function loadBanks(){
+  const res = await fetch("banks-de.json", { cache: "no-store" });
+  if(!res.ok) throw new Error("banks-de.json nicht gefunden (HTTP " + res.status + ")");
+  BANKS_DE = await res.json();
+}
+
+/* ===== events ===== */
+ibanEl.addEventListener("input", ()=>{
+  const before = ibanEl.value;
+  const after = formatIBANDisplay(before);
+  if(before !== after){
+    const atEnd = ibanEl.selectionStart === before.length && ibanEl.selectionEnd === before.length;
+    ibanEl.value = after;
+    if(atEnd) ibanEl.setSelectionRange(after.length, after.length);
+  }
+  setError("");
+  resultBox.style.display = "none";
+});
+
+function lookup(){
+  if(!BANKS_DE){
+    setError("Bankdaten werden noch geladen…");
+    return;
+  }
+
+  const raw = compactAlnumUpper(ibanEl.value);
+  const v = validateIBAN(raw);
+  if(!v.ok){
+    setError(v.msg);
+    resultBox.style.display = "none";
+    return;
+  }
+  setError("");
+
+  const country = raw.slice(0,2);
+  let bankCode = "—";
+
+  rCountry.textContent = country;
+
+  if(country === "DE"){
+  bankCode = raw.slice(4,12);
+  rBankCode.textContent = bankCode;
+
+  const bankName = BANKS_DE[String(bankCode)];
+
+  if(bankName){
+    rBankName.textContent = bankName;
+  } else {
+    rBankName.textContent = "Unbekannt";
+  }
+
+} else {
+  rBankCode.textContent = "—";
+  rBankName.textContent = "Aktuell nur DE-IBAN Lookup";
+}
+
+  resultBox.style.display = "block";
+}
+
+btn.addEventListener("click", lookup);
+ibanEl.addEventListener("keydown", (e)=>{ if(e.key === "Enter") lookup(); });
+
+/* ===== init ===== */
+(async ()=>{
+  try{
+    await loadBanks();
+    btn.disabled = false;
+    noticeEl.textContent = "Hinweis: Für DE wird die BLZ aus der IBAN gelesen. Die Zuordnung erfolgt über die lokale banks-de.json.";
+  }catch(err){
+    btn.disabled = true;
+    noticeEl.textContent = "Fehler: Bankdaten konnten nicht geladen werden. Öffne die Seite über einen lokalen Server (z. B. Live Server) und prüfe, ob banks-de.json im selben Ordner liegt.";
+    console.error(err);
+  }
+})();
+</script>
+</body>
+</html>
