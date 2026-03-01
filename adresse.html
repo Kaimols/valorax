@@ -445,63 +445,34 @@ const LANGS = {
     }
   },
 
-  ru: {
-    title: "Введите ваш адрес",
-    sub: "Введите данные адреса, чтобы мы могли корректно обработать запрос.",
-    labels: { 
-      first:"ИМЯ", 
-      last:"ФАМИЛИЯ", 
-      addr:"АДРЕС", 
-      zip:"ИНДЕКС", 
-      city:"ГОРОД", 
-      country:"СТРАНА" 
-    },
-    notice: "Примечание: данные обрабатываются только для обработки.",
-    cont: "Продолжить",
-    errors: {
-      first_required: "Требуется имя.",
-      first_short: "Имя слишком короткое.",
-      last_required: "Требуется фамилия.",
-      last_short: "Фамилия слишком короткая.",
-      addr_required: "Требуется адрес.",
-      addr_short: "Адрес слишком короткий.",
-      zip_required: "Требуется индекс.",
-      zip_len: "Индекс должен содержать 5 цифр.",
-      city_required: "Требуется город.",
-      city_short: "Город слишком короткий.",
-      country_required: "Требуется страна.",
-      country_short: "Страна слишком короткая."
-    }
+  fi:{
+  title:"Syötä osoitteesi",
+  sub:"Anna osoitetiedot, jotta voimme käsitellä pyyntösi oikein.",
+  labels:{
+    first:"ETUNIMI",
+    last:"SUKUNIMI",
+    addr:"OSOITE",
+    zip:"POSTINUMERO",
+    city:"KAUPUNKI",
+    country:"MAA"
   },
-
-  zhCN: {
-    title: "请输入你的地址",
-    sub: "请输入你的地址信息，以便我们正确处理请求。",
-    labels: { 
-      first:"名", 
-      last:"姓", 
-      addr:"地址", 
-      zip:"邮编", 
-      city:"城市", 
-      country:"国家" 
-    },
-    notice: "安全提示：你的信息仅用于处理。",
-    cont: "继续",
-    errors: {
-      first_required: "需要填写名字。",
-      first_short: "名字太短。",
-      last_required: "需要填写姓氏。",
-      last_short: "姓氏太短。",
-      addr_required: "需要填写地址。",
-      addr_short: "地址太短。",
-      zip_required: "需要填写邮编。",
-      zip_len: "邮编必须为5位数字。",
-      city_required: "需要填写城市。",
-      city_short: "城市太短。",
-      country_required: "需要填写国家。",
-      country_short: "国家太短。"
-    }
+  notice:"Huomautus: tietoja käsitellään vain käsittelyä varten.",
+  cont:"Jatka",
+  errors:{
+    first_required:"Etunimi vaaditaan.",
+    first_short:"Etunimi on liian lyhyt.",
+    last_required:"Sukunimi vaaditaan.",
+    last_short:"Sukunimi on liian lyhyt.",
+    addr_required:"Osoite vaaditaan.",
+    addr_short:"Osoite on liian lyhyt.",
+    zip_required:"Postinumero vaaditaan.",
+    zip_len:"Postinumeron tulee sisältää 5 numeroa.",
+    city_required:"Kaupunki vaaditaan.",
+    city_short:"Kaupunki on liian lyhyt.",
+    country_required:"Maa vaaditaan.",
+    country_short:"Maa on liian lyhyt."
   }
+}
 };
 
 let current = localStorage.getItem(STORAGE_KEY_LANG) || "de";

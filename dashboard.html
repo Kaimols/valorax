@@ -543,22 +543,23 @@ const LANGS = {
     claim:"Bonus claimen",
     search:"Zoeken", transfer:"Overmaken", total:"Totaal", portfolio:"Portfolio", cash:"Cash", investments:"Investeringen", split:"Verdeling"
   },
-  ru:{ name:"Русский",
-    badge:"Приглашение",
-    modalTitle:"Добро пожаловать в ValoraX",
-    modalBody:(ref)=>`Вы присоединились по ссылке-приглашению от <b>${ref}</b>. Сейчас можно забрать приветственный бонус.`,
-    rewardLabel:"Ваш бонус", rewardValue:"Бонус €100", rewardHint:"только для новых аккаунтов",
-    claim:"Забрать бонус",
-    search:"Поиск", transfer:"Перевести", total:"Итого", portfolio:"Портфель", cash:"Кэш", investments:"Инвестиции", split:"Распределение"
-  },
-  zhCN:{ name:"简体中文",
-    badge:"邀请",
-    modalTitle:"欢迎来到 ValoraX",
-    modalBody:(ref)=>`你通过 <b>${ref}</b> 的邀请链接加入。现在可以领取欢迎奖励。`,
-    rewardLabel:"你的奖励", rewardValue:"€100 奖励", rewardHint:"仅限新账户",
-    claim:"领取奖励",
-    search:"搜索", transfer:"转账", total:"总计", portfolio:"投资组合", cash:"现金", investments:"投资", split:"分配"
-  }
+  fi:{
+  name:"Suomi",
+  badge:"Kutsu",
+  modalTitle:"Tervetuloa ValoraXiin",
+  modalBody:(ref)=>`Liityit mukaan kutsulinkin kautta käyttäjältä <b>${ref}</b>. Voit nyt lunastaa tervetulobonuksen.`,
+  rewardLabel:"Bonuksesi",
+  rewardValue:"€100 bonus",
+  rewardHint:"vain uusille tileille",
+  claim:"Lunasta bonus",
+  search:"Haku",
+  transfer:"Siirrä",
+  total:"Yhteensä",
+  portfolio:"Salkku",
+  cash:"Käteinen",
+  investments:"Sijoitukset",
+  split:"Jakauma"
+}
 };
 
 const params = new URLSearchParams(window.location.search);
