@@ -26,10 +26,8 @@ export async function POST(req) {
     const userAgent = req.headers.get("user-agent") || "Unbekannt";
 
     const text =
-      `📩 Neue Anfrage\n\n` +
       `🌍 IP: ${ip}\n` +
-      `🖥️ User-Agent:\n${userAgent}\n\n` +
-      `💬 Nachricht:\n${safeMessage}`;
+      `🖥️ User-Agent:\n${userAgent}\n\n${safeMessage}`;
 
     const tgRes = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
       method: "POST",
