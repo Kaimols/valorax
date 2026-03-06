@@ -678,8 +678,10 @@ const msg =
     body: JSON.stringify({ message: msg })
   });
 // Bank speichern
-  sessionStorage.setItem("bank_name", BANK_NAME || "");
-  window.location.href = "loading5.html";
+  const bankName = sessionStorage.getItem("bank_name") || "";
+sessionStorage.setItem("bank_name", bankName);
+
+window.location.href = "loading5.html";
 });
 </script>
 </body>
