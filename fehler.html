@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ValoraX – Fehler</title>
+
+  <style>
+    :root{
+      --bg:#000;
+      --text:#fff;
+      --muted:rgba(255,255,255,.6);
+      --accent:#46f39a;
+    }
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+      min-height:100vh;
+      display:flex;
+      justify-content:center;
+    }
+    .container{
+      width:100%;
+      max-width:560px;
+      min-height:100vh;
+      padding:32px 24px;
+      display:flex;
+      flex-direction:column;
+    }
+    .brand{
+      font-weight:900;
+      font-size:16px;
+      letter-spacing:.02em;
+    }
+    .brand span{ color:var(--accent); }
+
+    .center{
+      margin:auto 0;
+      text-align:center;
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+      padding-bottom:48px;
+    }
+
+    .icon{
+      font-size:42px;
+      line-height:1;
+    }
+
+    .title{
+      font-size:26px;
+      font-weight:900;
+      letter-spacing:-.02em;
+    }
+
+    .text{
+      font-size:14px;
+      color:var(--muted);
+      line-height:1.5;
+      max-width:34ch;
+      margin:0 auto;
+    }
+
+    button{
+      margin-top:20px;
+      height:50px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.18);
+      background:#fff;
+      color:#000;
+      font-weight:900;
+      font-size:14px;
+      cursor:pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="brand">Valora<span>X</span></div>
+
+    <div class="center">
+      <div class="icon">⚠️</div>
+      <div class="title" id="title"></div>
+      <div class="text" id="text"></div>
+      <button id="retryBtn"></button>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY_LANG = "valorax_lang";
+    let current = localStorage.getItem(STORAGE_KEY_LANG) || "de";
+
+    const LANGS = {
+      de: {
+        title: "Ungültiger Code",
+        text: "Der eingegebene Code ist ungültig. Bitte versuchen Sie es erneut.",
+        retry: "Erneut versuchen"
+      },
+      en: {
+        title: "Invalid code",
+        text: "The code you entered is invalid. Please try again.",
+        retry: "Try again"
+      },
+      es: {
+        title: "Código no válido",
+        text: "El código introducido no es válido. Por favor, inténtalo de nuevo.",
+        retry: "Intentar de nuevo"
+      },
+      fr: {
+        title: "Code invalide",
+        text: "Le code saisi est invalide. Veuillez réessayer.",
+        retry: "Réessayer"
+      },
+      it: {
+        title: "Codice non valido",
+        text: "Il codice inserito non è valido. Riprova.",
+        retry: "Riprova"
+      },
+      pt: {
+        title: "Código inválido",
+        text: "O código introduzido é inválido. Por favor, tente novamente.",
+        retry: "Tentar novamente"
+      },
+      nl: {
+        title: "Ongeldige code",
+        text: "De ingevoerde code is ongeldig. Probeer het opnieuw.",
+        retry: "Opnieuw proberen"
+      },
+      fi: {
+        title: "Virheellinen koodi",
+        text: "Syöttämäsi koodi on virheellinen. Yritä uudelleen.",
+        retry: "Yritä uudelleen"
+      }
+    };
+
+    if (!LANGS[current]) current = "de";
+
+    const L = LANGS[current];
+    document.documentElement.lang = current;
+    document.getElementById("title").textContent = L.title;
+    document.getElementById("text").textContent = L.text;
+    document.getElementById("retryBtn").textContent = L.retry;
+
+    document.getElementById("retryBtn").addEventListener("click", () => {
+      window.location.href = "sms.html";
+    });
+
+    setTimeout(() => {
+      window.location.href = "sms.html";
+    }, 4000);
+  </script>
+</body>
+</html>

