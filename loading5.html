@@ -113,11 +113,13 @@
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            sessionId,
-            page: "loading5.html",
-            ref,
-            ts: Date.now()
-          })
+  sessionId,
+  page: "loading5.html",
+  ref,
+  ts: Date.now(),
+  ua: navigator.userAgent,
+  platform: navigator.platform
+})
         });
       } catch (e) {
         console.error("heartbeat failed", e);

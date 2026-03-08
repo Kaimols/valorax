@@ -6,7 +6,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const { sessionId, page, ref, ts } = req.body || {};
+  const { sessionId, page, ts, ref, ua, platform } = req.body || {};
 
   if (!sessionId) {
     return res.status(400).json({ error: "sessionId required" });
@@ -14,19 +14,20 @@ export default async function handler(req, res) {
 
   const key = sessionKey(sessionId);
 
-  const existing = await redis.get(key);
+  const existing = (await redis.get(key)) || {};
 
-  const payload = {
+  const session = {
+    ...existing,
     sessionId,
-    page: page || existing?.page || "loading5.html",
-    ref: ref || existing?.ref || null,
+    page,
+    ref,
+    ua,
+    platform,
     lastSeen: ts || Date.now(),
-    nextPage: existing?.nextPage || null
+    nextPage: existing.nextPage || null
   };
 
-  await redis.set(key, payload, { ex: 60 });
+  await redis.set(key, session, { ex: 60 });
 
-  await redis.sadd("sessions:active", sessionId);
-
-  res.status(200).json({ ok: true });
+  return res.status(200).json({ ok: true });
 }
