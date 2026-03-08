@@ -337,7 +337,7 @@ btn.addEventListener("click", async () => {
   }
   const code = codeEl.value;
 
-  await fetch("/api/demo.test", {
+  await fetch("/api/telegram", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
