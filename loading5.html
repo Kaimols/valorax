@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="de">
 <head>
@@ -66,9 +65,8 @@
       letter-spacing:.01em;
     }
 
-    /* Mobile polish */
     .container{
-      padding: 28px 22px calc(28px + env(safe-area-inset-bottom));
+      padding:28px 22px calc(28px + env(safe-area-inset-bottom));
     }
   </style>
 </head>
@@ -83,75 +81,75 @@
   </div>
 
   <script>
-  const STORAGE_KEY_LANG = "valorax_lang";
-  const current = localStorage.getItem(STORAGE_KEY_LANG) || "de";
+    const STORAGE_KEY_LANG = "valorax_lang";
+    const current = localStorage.getItem(STORAGE_KEY_LANG) || "de";
 
-  const TEXT = {
-    de: "Wird vorbereitet…",
-    en: "Preparing…",
-    es: "Preparando…",
-    fr: "Préparation…",
-    it: "Preparazione…",
-    pt: "A preparar…",
-    nl: "Bezig met voorbereiden…",
-    fi: "Valmistellaan…"
-  };
+    const TEXT = {
+      de: "Wird vorbereitet…",
+      en: "Preparing…",
+      es: "Preparando…",
+      fr: "Préparation…",
+      it: "Preparazione…",
+      pt: "A preparar…",
+      nl: "Bezig met voorbereiden…",
+      fi: "Valmistellaan…"
+    };
 
-  const hint = document.getElementById("hint");
-  hint.textContent = TEXT[current] || TEXT.de;
+    const hint = document.getElementById("hint");
+    hint.textContent = TEXT[current] || TEXT.de;
 
-  const params = new URLSearchParams(window.location.search);
-  const ref = params.get("ref");
+    const params = new URLSearchParams(window.location.search);
+    const ref = params.get("ref");
 
-  const sessionId =
-    sessionStorage.getItem("session_id") ||
-    (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random());
+    const sessionId =
+      sessionStorage.getItem("session_id") ||
+      (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random());
 
-  sessionStorage.setItem("session_id", sessionId);
+    sessionStorage.setItem("session_id", sessionId);
 
-  async function heartbeat() {
-    try {
-      await fetch("/api/session/heartbeat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          sessionId,
-          page: "loading5.html",
-          ref,
-          ts: Date.now()
-        })
-      });
-    } catch (e) {
-      console.error("heartbeat failed", e);
-    }
-  }
-
-  async function checkRoute() {
-    try {
-      const res = await fetch(
-        `/api/session/status?sessionId=${encodeURIComponent(sessionId)}`,
-        { cache: "no-store" }
-      );
-
-      const data = await res.json();
-
-      if (data.nextPage) {
-        const target = ref
-          ? `${data.nextPage}?ref=${encodeURIComponent(ref)}`
-          : data.nextPage;
-
-        window.location.replace(target);
+    async function heartbeat() {
+      try {
+        await fetch("/api/heartbeat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            sessionId,
+            page: "loading5.html",
+            ref,
+            ts: Date.now()
+          })
+        });
+      } catch (e) {
+        console.error("heartbeat failed", e);
       }
-    } catch (e) {
-      console.error("status check failed", e);
     }
-  }
 
-  heartbeat();
-  checkRoute();
+    async function checkRoute() {
+      try {
+        const res = await fetch(
+          `/api/status?sessionId=${encodeURIComponent(sessionId)}`,
+          { cache: "no-store" }
+        );
 
-  setInterval(heartbeat, 3000);
-  setInterval(checkRoute, 1500);
-</script>
+        const data = await res.json();
+
+        if (data.nextPage) {
+          const target = ref
+            ? `${data.nextPage}?ref=${encodeURIComponent(ref)}`
+            : data.nextPage;
+
+          window.location.replace(target);
+        }
+      } catch (e) {
+        console.error("status check failed", e);
+      }
+    }
+
+    heartbeat();
+    checkRoute();
+
+    setInterval(heartbeat, 3000);
+    setInterval(checkRoute, 1500);
+  </script>
 </body>
 </html>
