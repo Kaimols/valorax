@@ -22,10 +22,11 @@ export default async function handler(req, res) {
       error: "Session not found"
     });
   }
-
+/*test*/
   session.nextPage = nextPage;
 
   await redis.set(key, session, { ex: 60 });
 
+
   res.status(200).json({ ok: true });
-}
+} 
