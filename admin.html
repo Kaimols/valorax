@@ -263,7 +263,7 @@
 
     async function routeSession(sessionId, nextPage) {
       try {
-        const res = await fetch("/api/admin/redirect", {
+        const res = await fetch("/api/admin-redirect", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ sessionId, nextPage })
@@ -350,7 +350,7 @@
       statusMeta.textContent = "Lade Sessions…";
 
       try {
-        const res = await fetch("/api/admin/sessions", { cache: "no-store" });
+        const res = await fetch("/api/admin-sessions", { cache: "no-store" });
 
         if (!res.ok) {
           throw new Error("Sessions konnten nicht geladen werden");
